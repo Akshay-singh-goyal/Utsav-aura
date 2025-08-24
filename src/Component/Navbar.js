@@ -100,13 +100,16 @@ export default function Navbar() {
           </IconButton>
 
           {/* Logo */}
-          <Typography
-            variant="h6"
-            sx={{ fontWeight: "bold", cursor: "pointer" }}
-            onClick={() => navigate("/")}
-          >
-            GaneshMurti
-          </Typography>
+         <Box
+  component="img"
+  src="/utsavlogo.png" // Path to your logo image (place it in public folder)
+  alt="GaneshMurti Logo"
+  sx={{
+    height: 50,           // Adjust logo height
+    cursor: "pointer",
+  }}
+  onClick={() => navigate("/")}
+/>
 
           {/* Links (Desktop) */}
           <Box sx={{ ml: "auto", display: { xs: "none", md: "flex" }, gap: 3, alignItems: "center" }}>
