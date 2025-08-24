@@ -69,50 +69,7 @@ export default function Home() {
     <Box sx={{ bgcolor: "#f3f4f6", minHeight: "100vh" }}>
       <audio ref={audioRef} src="/ganesh-vandana.mp3" loop />
 
-      {/* Navbar */}
-      <Box sx={{
-        bgcolor: "#1e293b", color: "white", px: 3, py: 2,
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        position: "sticky", top: 0, zIndex: 1000, boxShadow: 3, flexWrap: "wrap", gap: 1
-      }}>
-        <Typography variant="h6" fontWeight="bold" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          {ganeshNames[currentNameIndex]}
-        </Typography>
-
-        <Box sx={{ display: { xs: "none", md: "flex" }, flex: 1, mx: 2 }}>
-          <TextField
-            placeholder="Search..."
-            size="small"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            sx={{ bgcolor: "#fff", borderRadius: 1, ml: 2, width: "100%" }}
-          />
-        </Box>
-
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <IconButton sx={{ color: "white" }} onClick={() => navigate("/cart")}>
-            <ShoppingCart />
-          </IconButton>
-          <IconButton sx={{ color: "white", display: { xs: "none", md: "inline-flex" } }}>
-            <AccountCircle />
-          </IconButton>
-          <Button
-            onClick={toggleAudio}
-            startIcon={isPlaying ? <FaPause /> : <FaPlay />}
-            sx={{
-              background: "linear-gradient(to right, #facc15, #fb923c)",
-              color: "#1e293b", fontWeight: "bold", px: 2, borderRadius: 2,
-              "&:hover": { background: "linear-gradient(to right, #fbbf24, #ef4444)" },
-              minWidth: { xs: "auto", md: 120 }
-            }}
-          >
-            <Box component="span" sx={{ display: { xs: "none", md: "inline" } }}>
-              {isPlaying ? "Pause Vandana" : "Play Vandana"}
-            </Box>
-          </Button>
-        </Box>
-      </Box>
+      {/* ✅ Navbar REMOVED here */}
 
       {/* Search Results */}
       {searchResults.length > 0 && (

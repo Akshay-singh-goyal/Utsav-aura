@@ -1,4 +1,4 @@
-// Navbar.jsx
+// src/Component/Navbar.jsx
 import React, { useEffect, useState } from "react";
 import {
   AppBar,
@@ -17,27 +17,80 @@ import {
   Avatar,
   Divider,
   Collapse,
+  TextField,
+  Container,
+  Grid,
+  Paper,
 } from "@mui/material";
-import { MdKeyboardArrowDown, MdExpandLess, MdExpandMore, MdClose } from "react-icons/md";
-import { GiPagoda } from "react-icons/gi";
-import { CiBookmark, CiUser } from "react-icons/ci";
-import { FaPhoneVolume, FaUserCircle, FaShoppingCart } from "react-icons/fa";
+import {
+  MdExpandLess,
+  MdExpandMore,
+  MdClose,
+  MdMenu,
+} from "react-icons/md";
+import {
+  FaPhoneVolume,
+  FaUserCircle,
+  FaShoppingCart,
+  FaPause,
+  FaPlay,
+} from "react-icons/fa";
+import { CiUser } from "react-icons/ci";
+import {
+  AccountCircle,
+  ShoppingCart,
+  Home,
+  Search,
+} from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import utsavLogo from "./Images/utsavlogo.png";
 
 export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [profileAnchor, setProfileAnchor] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
-  const [profileMenuOpen, setProfileMenuOpen] = useState(true);
-  const navigate = useNavigate();
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [currentNameIndex, setCurrentNameIndex] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [audio] = useState(new Audio("/vandana.mp3"));
+  const [drawerSearchOpen, setDrawerSearchOpen] = useState(false);
 
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const isLoggedIn = !!token;
 
-  const colors = { bg: "#fffbf0", text: "#4a3c1b", primary: "#fc8019", hover: "#ff6600" };
+  const colors = {
+    bg: "#1e293b",
+    text: "#fff",
+    primary: "#facc15",
+    hover: "#fbbf24",
+  };
 
+  // Rotating Ganesh names
+  const ganeshNames = [
+    "गणपति", "विनायक", "विघ्नहर्ता", "सिद्धिविनायक", "लम्बोदर",
+    "गजानन", "वक्रतुंड", "धूम्रवर्ण", "एकदंत", "कपिल",
+    "वक्रतुंड महाकाय", "मंगलमूर्ति",
+  ];
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentNameIndex((prev) => (prev + 1) % ganeshNames.length);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Audio toggle
+  const toggleAudio = () => {
+    if (isPlaying) audio.pause();
+    else audio.play();
+    setIsPlaying(!isPlaying);
+  };
+
+  // Profile fetch
   useEffect(() => {
     const fetchProfile = async () => {
       if (!token) return;
@@ -62,11 +115,28 @@ export default function Navbar() {
     toast.success("Logged out successfully!");
   };
 
+  // Search handler
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) return;
+    try {
+      const res = await fetch(
+        `https://utsav-aura-backend-7.onrender.com/search?query=${searchQuery}`
+      );
+      const data = await res.json();
+      if (data.success) {
+        setSearchResults(data.results);
+        setDrawerOpen(false); // close drawer on search
+      } else {
+        setSearchResults([]);
+      }
+    } catch (err) {
+      console.error("Search error:", err);
+    }
+  };
+
   const links = [
-    { icon: <GiPagoda />, name: "Murti", path: "/murti" },
-    { icon: <CiBookmark />, name: "Book Now", path: "/book" },
     { icon: <CiUser />, name: "About", path: "/about" },
-    { icon: <FaPhoneVolume />, name: "Contact-Us", path: "/contact-us" },
+    { icon: <FaPhoneVolume />, name: "Contact Us", path: "/contact-us" },
   ];
 
   const profileLinks = [
@@ -86,68 +156,156 @@ export default function Navbar() {
 
   return (
     <>
-      <AppBar position="static" sx={{ backgroundColor: colors.bg, color: colors.text }}>
-        <Toolbar>
-          {/* Hamburger for Mobile */}
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2, display: { md: "none" } }}
-            onClick={() => setDrawerOpen(true)}
-          >
-            <MdKeyboardArrowDown size={30} color={colors.primary} />
-          </IconButton>
-
+      {/* Navbar */}
+      <AppBar
+        position="sticky"
+        sx={{
+          backgroundColor: colors.bg,
+          color: colors.text,
+          height: 80,
+          justifyContent: "center",
+          boxShadow: 3,
+        }}
+      >
+        <Toolbar
+          sx={{
+            minHeight: "80px !important",
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
           {/* Logo */}
-         <Box
-  component="img"
-  src="/utsavlogo.png" // Path to your logo image (place it in public folder)
-  alt="GaneshMurti Logo"
-  sx={{
-    height: 50,           // Adjust logo height
-    cursor: "pointer",
-  }}
-  onClick={() => navigate("/")}
-/>
+          <Box
+            component="img"
+            src={utsavLogo}
+            alt="UtsavAura Logo"
+            sx={{
+              position: "absolute",
+              top: "10px",
+              left: "20px",
+              height: "120px",
+              width: "120px",
+              borderRadius: "50%",
+              objectFit: "cover",
+              cursor: "pointer",
+              zIndex: 10,
+            }}
+            onClick={() => navigate("/")}
+          />
 
-          {/* Links (Desktop) */}
-          <Box sx={{ ml: "auto", display: { xs: "none", md: "flex" }, gap: 3, alignItems: "center" }}>
-            {links.map((link, index) => (
+          {/* Ganesh Names */}
+          <Typography
+            variant="h6"
+            fontWeight="bold"
+            sx={{ flex: 1, textAlign: "center", mx: 2 }}
+          >
+            {ganeshNames[currentNameIndex]}
+          </Typography>
+
+          {/* Right Side */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            {/* Cart always visible on desktop */}
+            <IconButton
+              sx={{ color: colors.text, display: { xs: "none", md: "flex" } }}
+              onClick={() => navigate("/cart")}
+            >
+              <ShoppingCart />
+            </IconButton>
+
+            {/* Hamburger (Mobile Only) */}
+            <IconButton
+              edge="end"
+              sx={{ color: colors.primary, display: { xs: "flex", md: "none" } }}
+              onClick={() => setDrawerOpen(true)}
+            >
+              <MdMenu size={30} />
+            </IconButton>
+          </Box>
+
+          {/* Desktop Only Items */}
+          <Box
+            sx={{
+              display: { xs: "none", md: "flex" },
+              alignItems: "center",
+              gap: 2,
+              ml: 2,
+            }}
+          >
+            {/* Home Button */}
+            <Button
+              startIcon={<Home />}
+              sx={{ color: colors.text }}
+              onClick={() => navigate("/")}
+            >
+              Home
+            </Button>
+
+            {/* Search Bar */}
+            <TextField
+              placeholder="Search..."
+              size="small"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              sx={{
+                bgcolor: "#fff",
+                borderRadius: 1,
+                input: { color: "#000" },
+                width: 250,
+              }}
+            />
+
+            {/* Signup/Login or Profile */}
+            {!isLoggedIn ? (
               <Button
-                key={index}
-                startIcon={link.icon}
-                onClick={() => navigate(link.path)}
-                sx={{ fontWeight: "bold", color: colors.text, "&:hover": { color: colors.hover } }}
+                variant="outlined"
+                sx={{
+                  borderColor: "red",
+                  color: "red",
+                  "&:hover": { backgroundColor: "red", color: "white" },
+                  ml: 1,
+                }}
+                onClick={() => navigate("/login")}
               >
-                {link.name}
+                Signup / SignIn
               </Button>
-            ))}
-
-            {isLoggedIn && userProfile ? (
+            ) : (
               <>
-                <IconButton onClick={(e) => setProfileAnchor(e.currentTarget)} sx={{ ml: 2 }}>
-                  <Avatar>{userProfile.name[0]}</Avatar>
+                <IconButton onClick={(e) => setProfileAnchor(e.currentTarget)}>
+                  <Avatar>
+                    {userProfile?.name
+                      ? userProfile.name.charAt(0).toUpperCase()
+                      : "U"}
+                  </Avatar>
                 </IconButton>
                 <Menu
                   anchorEl={profileAnchor}
                   open={Boolean(profileAnchor)}
                   onClose={() => setProfileAnchor(null)}
-                  transformOrigin={{ horizontal: "right", vertical: "top" }}
-                  anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-                  sx={{ mt: 1 }}
+                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                  transformOrigin={{ vertical: "top", horizontal: "right" }}
                 >
-                  <MenuItem disabled><strong>{userProfile.name}</strong></MenuItem>
-                  <MenuItem disabled>{userProfile.email}</MenuItem>
+                  <MenuItem disabled>
+                    <strong>{userProfile?.name || "User"}</strong>
+                  </MenuItem>
+                  <MenuItem disabled>
+                    {userProfile?.email || "No Email"}
+                  </MenuItem>
                   <Divider />
                   {profileLinks.map((link) => (
-                    <MenuItem key={link.name} onClick={() => { navigate(link.path); setProfileAnchor(null); }}>
+                    <MenuItem
+                      key={link.name}
+                      onClick={() => navigate(link.path)}
+                    >
                       {link.name}
                     </MenuItem>
                   ))}
                   <Divider />
                   {otherLinks.map((link) => (
-                    <MenuItem key={link.name} onClick={() => { navigate(link.path); setProfileAnchor(null); }}>
+                    <MenuItem
+                      key={link.name}
+                      onClick={() => navigate(link.path)}
+                    >
                       {link.icon && <Box sx={{ mr: 1 }}>{link.icon}</Box>}
                       {link.name}
                     </MenuItem>
@@ -155,80 +313,237 @@ export default function Navbar() {
                   {userProfile?.role === "admin" && (
                     <>
                       <Divider />
-                      <MenuItem onClick={() => { navigate("/admin"); setProfileAnchor(null); }}>Admin Dashboard</MenuItem>
+                      <MenuItem onClick={() => navigate("/admin")}>
+                        Admin Dashboard
+                      </MenuItem>
                     </>
                   )}
                   <Divider />
-                  <MenuItem onClick={handleLogout} sx={{ color: "red" }}>Logout</MenuItem>
+                  <MenuItem onClick={handleLogout} sx={{ color: "red" }}>
+                    Logout
+                  </MenuItem>
                 </Menu>
               </>
-            ) : (
-              <Button
-                variant="outlined"
-                sx={{ borderColor: "red", color: "red", "&:hover": { backgroundColor: "red", color: "white" } }}
-                onClick={() => navigate("/login")}
-              >
-                Signup / SignIn
-              </Button>
             )}
+
+            {/* Audio Button */}
+            <Button
+              onClick={toggleAudio}
+              startIcon={isPlaying ? <FaPause /> : <FaPlay />}
+              sx={{
+                background: "linear-gradient(to right, #facc15, #fb923c)",
+                color: "#1e293b",
+                fontWeight: "bold",
+                px: 2,
+                borderRadius: 2,
+                "&:hover": {
+                  background: "linear-gradient(to right, #fbbf24, #ef4444)",
+                },
+              }}
+            >
+              {isPlaying ? "Pause Vandana" : "Play Vandana"}
+            </Button>
           </Box>
         </Toolbar>
       </AppBar>
 
-      {/* Drawer (Mobile) */}
-      <Drawer anchor="left" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <Box sx={{ width: 280 }} role="presentation">
-          {/* Close Button */}
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", p: 2, borderBottom: "1px solid #ccc" }}>
-            <Typography variant="h6" sx={{ fontWeight: "bold" }}>Menu</Typography>
+      {/* Drawer (Mobile Menu) */}
+      <Drawer
+        anchor="right"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+      >
+        <Box sx={{ width: 280 }}>
+          {/* Drawer Header */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              p: 2,
+              borderBottom: "1px solid #ccc",
+            }}
+          >
+            <Typography variant="h6">Menu</Typography>
             <IconButton onClick={() => setDrawerOpen(false)}>
               <MdClose size={24} />
             </IconButton>
           </Box>
 
           <List>
+            {/* Home Option */}
+            <ListItem
+              button
+              onClick={() => {
+                navigate("/");
+                setDrawerOpen(false);
+              }}
+            >
+              <ListItemIcon>
+                <Home />
+              </ListItemIcon>
+              <ListItemText primary="Home" />
+            </ListItem>
+
+            {/* Search Option */}
+            <ListItem
+              button
+              onClick={() => setDrawerSearchOpen(!drawerSearchOpen)}
+            >
+              <ListItemIcon>
+                <Search />
+              </ListItemIcon>
+              <ListItemText primary="Search" />
+              {drawerSearchOpen ? <MdExpandLess /> : <MdExpandMore />}
+            </ListItem>
+            <Collapse in={drawerSearchOpen}>
+              <Box sx={{ p: 2 }}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                  sx={{ bgcolor: "#fff", borderRadius: 1 }}
+                />
+                <Button
+                  variant="contained"
+                  fullWidth
+                  sx={{ mt: 1, bgcolor: colors.primary }}
+                  onClick={handleSearch}
+                >
+                  Search
+                </Button>
+              </Box>
+            </Collapse>
+
+            {/* Cart Option in Drawer (Mobile only) */}
+            <ListItem
+              button
+              onClick={() => {
+                navigate("/cart");
+                setDrawerOpen(false);
+              }}
+            >
+              <ListItemIcon>
+                <ShoppingCart />
+              </ListItemIcon>
+              <ListItemText primary="My Cart" />
+            </ListItem>
+
+            {/* About + Contact */}
             {links.map((link, i) => (
-              <ListItem button key={i} onClick={() => { navigate(link.path); setDrawerOpen(false); }}>
+              <ListItem
+                button
+                key={i}
+                onClick={() => {
+                  navigate(link.path);
+                  setDrawerOpen(false);
+                }}
+              >
                 <ListItemIcon>{link.icon}</ListItemIcon>
                 <ListItemText primary={link.name} />
               </ListItem>
             ))}
 
-            {/* Signup/Login in Mobile Drawer */}
+            {/* Signup/Login */}
             {!isLoggedIn && (
-              <ListItem button onClick={() => { navigate("/login"); setDrawerOpen(false); }}>
-                <ListItemIcon><FaUserCircle /></ListItemIcon>
+              <ListItem
+                button
+                onClick={() => {
+                  navigate("/login");
+                  setDrawerOpen(false);
+                }}
+              >
+                <ListItemIcon>
+                  <FaUserCircle />
+                </ListItemIcon>
                 <ListItemText primary="Signup / Login" />
               </ListItem>
             )}
 
+            {/* Audio Button in Drawer */}
+            <ListItem
+              button
+              onClick={() => {
+                toggleAudio();
+                setDrawerOpen(false);
+              }}
+            >
+              <ListItemIcon>
+                {isPlaying ? <FaPause /> : <FaPlay />}
+              </ListItemIcon>
+              <ListItemText
+                primary={isPlaying ? "Pause Vandana" : "Play Vandana"}
+              />
+            </ListItem>
+
+            {/* Profile Links in Drawer */}
             {isLoggedIn && userProfile && (
               <>
                 <Divider />
-                <ListItem button onClick={() => setProfileMenuOpen(!profileMenuOpen)}>
-                  <ListItemIcon><FaUserCircle /></ListItemIcon>
-                  <ListItemText primary="Profile" />
+                <ListItem
+                  button
+                  onClick={() => setProfileMenuOpen(!profileMenuOpen)}
+                >
+                  <ListItemIcon>
+                    <FaUserCircle />
+                  </ListItemIcon>
+                  <ListItemText primary={userProfile?.name || "Profile"} />
                   {profileMenuOpen ? <MdExpandLess /> : <MdExpandMore />}
                 </ListItem>
-                <Collapse in={profileMenuOpen} timeout="auto" unmountOnExit>
+                <Collapse in={profileMenuOpen}>
                   <List component="div" disablePadding>
                     {profileLinks.map((link) => (
-                      <ListItem button key={link.name} sx={{ pl: 4 }} onClick={() => { navigate(link.path); setDrawerOpen(false); }}>
+                      <ListItem
+                        button
+                        key={link.name}
+                        sx={{ pl: 4 }}
+                        onClick={() => {
+                          navigate(link.path);
+                          setDrawerOpen(false);
+                        }}
+                      >
                         <ListItemText primary={link.name} />
                       </ListItem>
                     ))}
                     {otherLinks.map((link) => (
-                      <ListItem button key={link.name} sx={{ pl: 4 }} onClick={() => { navigate(link.path); setDrawerOpen(false); }}>
-                        {link.icon && <ListItemIcon>{link.icon}</ListItemIcon>}
+                      <ListItem
+                        button
+                        key={link.name}
+                        sx={{ pl: 4 }}
+                        onClick={() => {
+                          navigate(link.path);
+                          setDrawerOpen(false);
+                        }}
+                      >
+                        {link.icon && (
+                          <ListItemIcon>{link.icon}</ListItemIcon>
+                        )}
                         <ListItemText primary={link.name} />
                       </ListItem>
                     ))}
                     {userProfile?.role === "admin" && (
-                      <ListItem button sx={{ pl: 4 }} onClick={() => { navigate("/admin"); setDrawerOpen(false); }}>
+                      <ListItem
+                        button
+                        sx={{ pl: 4 }}
+                        onClick={() => {
+                          navigate("/admin");
+                          setDrawerOpen(false);
+                        }}
+                      >
                         <ListItemText primary="Admin Dashboard" />
                       </ListItem>
                     )}
-                    <ListItem button sx={{ pl: 4, color: "red" }} onClick={() => { handleLogout(); setDrawerOpen(false); }}>
+                    <ListItem
+                      button
+                      sx={{ pl: 4, color: "red" }}
+                      onClick={() => {
+                        handleLogout();
+                        setDrawerOpen(false);
+                      }}
+                    >
                       <ListItemText primary="Logout" />
                     </ListItem>
                   </List>
@@ -239,7 +554,48 @@ export default function Navbar() {
         </Box>
       </Drawer>
 
-      {/* Toast Container */}
+      {/* Search Results */}
+      {searchResults.length > 0 && (
+        <Container sx={{ py: 5 }}>
+          <Typography variant="h5" mb={3} sx={{ color: "#fbbf24" }}>
+            Search Results for "{searchQuery}"
+          </Typography>
+          <Grid container spacing={3}>
+            {searchResults.map((item) => (
+              <Grid item xs={12} sm={6} md={4} key={item._id}>
+                <Paper
+                  elevation={3}
+                  sx={{
+                    borderRadius: 3,
+                    overflow: "hidden",
+                    cursor: "pointer",
+                    "&:hover": { boxShadow: 6 },
+                  }}
+                  onClick={() =>
+                    navigate(`/${item.type.toLowerCase()}/${item._id}`)
+                  }
+                >
+                  <img
+                    src={item.image || "/placeholder.png"}
+                    alt={item.name}
+                    style={{ width: "100%", height: 180, objectFit: "cover" }}
+                  />
+                  <Box sx={{ p: 2 }}>
+                    <Typography variant="h6">{item.name}</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Type: {item.type}
+                    </Typography>
+                    {item.price && (
+                      <Typography fontWeight="bold">₹{item.price}</Typography>
+                    )}
+                  </Box>
+                </Paper>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      )}
+
       <ToastContainer position="top-right" autoClose={2500} theme="colored" />
     </>
   );
