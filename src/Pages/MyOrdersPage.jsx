@@ -16,7 +16,7 @@ import { io } from "socket.io-client";
 import axios from "axios";
 import { ShoppingCart } from "@mui/icons-material";
 
-const socket = io("http://localhost:5000");
+const socket = io("https://utsav-aura-backend-7.onrender.com/");
 
 export default function MyOrdersPage() {
   const [orders, setOrders] = useState([]);
@@ -38,7 +38,7 @@ export default function MyOrdersPage() {
 
     setLoading(true);
     try {
-      const res = await axios.get(`http://localhost:5000/api/orders/user/${user.id}`);
+      const res = await axios.get(`https://utsav-aura-backend-7.onrender.com/api/orders/user/${user.id}`);
       setOrders(res.data || []);
       socket.emit("joinRoom", user.id);
     } catch (err) {
@@ -66,7 +66,7 @@ export default function MyOrdersPage() {
 
     try {
       const res = await axios.patch(
-        `http://localhost:5000/api/orders/status/${orderId}`,
+        `https://utsav-aura-backend-7.onrender.com/api/orders/status/${orderId}`,
         { status: "Cancelled", note: "Cancelled by user" }
       );
       setOrders((prev) =>

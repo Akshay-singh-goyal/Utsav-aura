@@ -57,7 +57,7 @@ export default function Home() {
   const handleSearch = async () => {
     if (!searchQuery) return setSearchResults([]);
     try {
-      const res = await fetch(`http://localhost:5000/api/search?q=${searchQuery}`);
+      const res = await fetch(`https://utsav-aura-backend-7.onrender.com/api/search?q=${searchQuery}`);
       const data = await res.json();
       if (data.success) setSearchResults(data.results);
     } catch (err) {

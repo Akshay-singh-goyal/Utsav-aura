@@ -62,7 +62,7 @@ export default function AdminPanel() {
 
   const fetchDecorations = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/admin/decorations");
+      const res = await axios.get("https://utsav-aura-backend-7.onrender.com/api/admin/decorations");
       setDecorations(res.data);
     } catch (err) {
       console.error(err);
@@ -72,7 +72,7 @@ export default function AdminPanel() {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/products");
+      const res = await axios.get("https://utsav-aura-backend-7.onrender.com/api/products");
       setProducts(res.data);
     } catch (err) {
       console.error(err);
@@ -115,7 +115,7 @@ export default function AdminPanel() {
       });
 
       const res = await axios.post(
-        "http://localhost:5000/api/admin/decorations/add",
+        "https://utsav-aura-backend-7.onrender.com/api/admin/decorations/add",
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
@@ -132,7 +132,7 @@ export default function AdminPanel() {
 
   const deleteDecoration = async (id) => {
     if (!window.confirm("Delete this decoration?")) return;
-    await axios.delete(`http://localhost:5000/api/admin/decorations/${id}`);
+    await axios.delete(`https://utsav-aura-backend-7.onrender.com/api/admin/decorations/${id}`);
     setDecorations(decorations.filter((d) => d._id !== id));
     toast.info("Decoration deleted");
   };
@@ -161,7 +161,7 @@ export default function AdminPanel() {
       let res;
       if (editId) {
         res = await axios.put(
-          `http://localhost:5000/api/products/${editId}`,
+          `https://utsav-aura-backend-7.onrender.com/api/products/${editId}`,
           formData,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
@@ -169,7 +169,7 @@ export default function AdminPanel() {
         toast.success("Product updated successfully!");
       } else {
         res = await axios.post(
-          "http://localhost:5000/api/products/add",
+          "https://utsav-aura-backend-7.onrender.com/api/products/add",
           formData,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
@@ -196,7 +196,7 @@ export default function AdminPanel() {
 
   const deleteProduct = async (id) => {
     if (!window.confirm("Delete this product?")) return;
-    await axios.delete(`http://localhost:5000/api/products/${id}`);
+    await axios.delete(`https://utsav-aura-backend-7.onrender.com/api/products/${id}`);
     setProducts(products.filter((p) => p._id !== id));
     toast.info("Product deleted");
   };

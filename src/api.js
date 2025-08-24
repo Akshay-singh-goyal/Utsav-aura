@@ -3,7 +3,7 @@ import axios from "axios";
 // safely read env variable
 const API_URL = (import.meta.env && import.meta.env.VITE_API_URL) 
   ? import.meta.env.VITE_API_URL 
-  : "http://localhost:5000/api";
+  : "https://utsav-aura-backend-7.onrender.com/api";
 
 console.log("API URL being used:", API_URL);
 

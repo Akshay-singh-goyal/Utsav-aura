@@ -22,7 +22,7 @@ import axios from "axios";
 import { io } from "socket.io-client";
 import Papa from "papaparse";
 
-const socket = io("http://localhost:5000");
+const socket = io("https://utsav-aura-backend-7.onrender.com/");
 
 const STATUS_COLORS = {
   Pending: "warning",
@@ -44,7 +44,7 @@ export default function AdminOrdersEnhanced() {
   // Fetch orders
   const fetchOrders = useCallback(async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/orders/all");
+      const res = await axios.get("https://utsav-aura-backend-7.onrender.com/api/orders/all");
       setOrders(res.data || []);
     } catch (err) {
       console.error("Failed to fetch orders:", err);
@@ -67,7 +67,7 @@ export default function AdminOrdersEnhanced() {
 
   const updateStatus = async (orderId, newStatus) => {
     try {
-      await axios.patch(`http://localhost:5000/api/orders/status/${orderId}`, { status: newStatus });
+      await axios.patch(`https://utsav-aura-backend-7.onrender.com/api/orders/status/${orderId}`, { status: newStatus });
       setOrders(prev =>
         prev.map(order => order._id === orderId ? { ...order, status: newStatus } : order)
       );

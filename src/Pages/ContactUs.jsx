@@ -17,7 +17,7 @@ export default function ContactUs() {
       return toast.error("Please fill all fields");
     }
     try {
-      await axios.post("http://localhost:5000/api/queries/create", form);
+      await axios.post("https://utsav-aura-backend-7.onrender.com/api/queries/create", form);
       toast.success("Query submitted successfully!");
       setForm({ name: "", email: "", subject: "", message: "" });
     } catch (err) {

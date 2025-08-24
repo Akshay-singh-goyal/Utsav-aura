@@ -26,7 +26,7 @@ export default function Footer() {
     if (!email) return setMessage('Please enter your email.');
 
     try {
-      const res = await fetch('http://localhost:8080/api/subscribe', {
+      const res = await fetch('https://utsav-aura-backend-7.onrender.com/api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),

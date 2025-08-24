@@ -56,7 +56,7 @@ export default function Signup() {
       };
       if (form.role === "admin") payload.adminKey = form.adminKey.trim();
 
-      const response = await fetch("http://localhost:5000/auth/signup", {
+      const response = await fetch("https://utsav-aura-backend-7.onrender.com/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

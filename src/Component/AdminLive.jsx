@@ -26,7 +26,7 @@ const AdminLive = () => {
 
   const fetchLives = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/live");
+      const res = await axios.get("https://utsav-aura-backend-7.onrender.com/api/live");
       setLives(res.data);
     } catch (err) {
       console.error("Error fetching lives:", err);
@@ -54,7 +54,7 @@ const AdminLive = () => {
       formData.append("startTime", form.startTime);
       if (form.poster) formData.append("poster", form.poster);
 
-      await axios.post("http://localhost:5000/api/live", formData, {
+      await axios.post("https://utsav-aura-backend-7.onrender.com/api/live", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -67,7 +67,7 @@ const AdminLive = () => {
 
   const updateStatus = async (id, status) => {
     try {
-      await axios.put(`http://localhost:5000/api/live/${id}/status`, { status });
+      await axios.put(`https://utsav-aura-backend-7.onrender.com/api/live/${id}/status`, { status });
       fetchLives();
     } catch (err) {
       console.error("Error updating status:", err);

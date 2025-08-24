@@ -129,7 +129,7 @@ export function AdminLayout() {
   const fetchProfile = useCallback(async () => {
     if (!token) return;
     try {
-      const res = await fetch("http://localhost:5000/auth/me", {
+      const res = await fetch("https://utsav-aura-backend-7.onrender.com/auth/me", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();

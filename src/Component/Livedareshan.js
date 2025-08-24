@@ -30,7 +30,7 @@ export default function Livedarshan() {
     const fetchStats = async () => {
       try {
         const res = await fetch(
-          "http://localhost:5000/api/misc/youtube-stats"
+          "https://utsav-aura-backend-7.onrender.com/api/misc/youtube-stats"
         );
         const data = await res.json();
         setStats({

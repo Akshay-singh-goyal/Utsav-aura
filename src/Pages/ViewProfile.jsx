@@ -43,7 +43,7 @@ export default function ViewProfile() {
       if (!token) return;
 
       try {
-        const res = await axios.get("http://localhost:5000/api/profile/me", {
+        const res = await axios.get("https://utsav-aura-backend-7.onrender.com/api/profile/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -61,7 +61,7 @@ export default function ViewProfile() {
             country: res.data.user.country || "India",
           });
 
-          const orderRes = await axios.get("http://localhost:5000/api/profile/orders", {
+          const orderRes = await axios.get("https://utsav-aura-backend-7.onrender.com/api/profile/orders", {
             headers: { Authorization: `Bearer ${token}` },
           });
           if (orderRes.data.success) setOrders(orderRes.data.orders);
@@ -80,7 +80,7 @@ export default function ViewProfile() {
   const handleUpdate = async () => {
     const token = localStorage.getItem("token");
     try {
-      const res = await axios.put("http://localhost:5000/api/profile/update", form, {
+      const res = await axios.put("https://utsav-aura-backend-7.onrender.com/api/profile/update", form, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

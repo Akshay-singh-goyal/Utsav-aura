@@ -16,7 +16,7 @@ const LiveHistory = () => {
   useEffect(() => {
     const fetchLives = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/live");
+        const res = await axios.get("https://utsav-aura-backend-7.onrender.com/api/live");
         setLives(res.data);
       } catch (err) {
         console.error("Failed to fetch live sessions:", err);

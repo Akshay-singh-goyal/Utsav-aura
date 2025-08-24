@@ -34,7 +34,7 @@ export default function DecorationDetail() {
 
   const fetchDecoration = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/admin/decorations/${id}`);
+      const res = await axios.get(`https://utsav-aura-backend-7.onrender.com/api/admin/decorations/${id}`);
       setItem(res.data);
       setSelectedImage(res.data.image);
     } catch (err) {

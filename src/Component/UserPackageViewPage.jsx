@@ -19,7 +19,7 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "https://utsav-aura-backend-7.onrender.com/api";
 
 export default function UserPackageView() {
   const [packages, setPackages] = useState([]);

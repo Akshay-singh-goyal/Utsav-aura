@@ -27,7 +27,7 @@ import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import ImageIcon from "@mui/icons-material/Image";
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "https://utsav-aura-backend-7.onrender.com/api";
 const NAME_OPTIONS = ["Basic", "Standard", "Premium"];
 const TYPE_OPTIONS = ["1-day", "10-day", "Full"];
 

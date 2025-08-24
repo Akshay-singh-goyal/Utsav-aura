@@ -8,7 +8,7 @@ export default function AdminQueries() {
 
   const fetchQueries = async () => {
     try {
-      const { data } = await axios.get("http://localhost:5000/api/queries/all");
+      const { data } = await axios.get("https://utsav-aura-backend-7.onrender.com/api/queries/all");
       setQueries(data);
     } catch (err) {
       console.error(err);
@@ -18,7 +18,7 @@ export default function AdminQueries() {
 
   const handleStatusChange = async (id, status) => {
     try {
-      await axios.patch(`http://localhost:5000/api/queries/status/${id}`, { status });
+      await axios.patch(`https://utsav-aura-backend-7.onrender.com/api/queries/status/${id}`, { status });
       toast.success("Status updated");
       fetchQueries();
     } catch (err) {

@@ -174,7 +174,7 @@ export default function CheckoutPage() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/orders/create",
+        "https://utsav-aura-backend-7.onrender.com/api/orders/create",
         payload,
         { headers: { Authorization: `Bearer ${token}` } }
       );

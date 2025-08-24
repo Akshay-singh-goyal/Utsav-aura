@@ -32,7 +32,7 @@ export default function ProductDetails() {
 
   const fetchProduct = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/products/${id}`);
+      const res = await axios.get(`https://utsav-aura-backend-7.onrender.com/api/products/${id}`);
       setProduct(res.data);
       setSelectedImage(res.data.image);
     } catch (err) {
