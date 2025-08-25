@@ -110,41 +110,40 @@ export default function App() {
         <Route
           path="/cart"
           element={
-            <ProtectedRoute role="user">
+           
               <Cart />
-            </ProtectedRoute>
+           
           }
         />
         <Route
           path="/checkout"
           element={
-            <ProtectedRoute role="user">
+            
               <CheckoutPage />
-            </ProtectedRoute>
+           
           }
         />
         <Route
           path="/order-confirmation"
           element={
-            <ProtectedRoute role="user">
+          
               <OrderConfirmation />
-            </ProtectedRoute>
+          
           }
         />
         <Route
           path="/my-order"
           element={
-            <ProtectedRoute role="user">
+           
               <MyOrdersPage />
-            </ProtectedRoute>
           }
         />
         <Route
           path="/packages"
           element={
-            <ProtectedRoute role="user">
+           
               <PackageList />
-            </ProtectedRoute>
+           
           }
         />
 

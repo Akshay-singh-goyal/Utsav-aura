@@ -1,11 +1,8 @@
 // src/Pages/Home.jsx
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Box, Typography, Button, Grid, Paper, Container,
-  IconButton, TextField
+  Box, Typography, Grid, Paper, Container
 } from "@mui/material";
-import { FaPlay, FaPause } from "react-icons/fa";
-import { ShoppingCart, AccountCircle } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import Slider from "../Component/Slider";
 import LiveDarshan from "../Component/Livedareshan";
@@ -14,6 +11,12 @@ import ProductGallery from "../Component/ProductGallery";
 import DecorationGallery from "../Component/DecorationGallery";
 import UserPackageViewPage from "../Component/UserPackageViewPage";
 import { getLoggedInUser } from "../utils/auth";
+
+// ✅ Imported images
+import murtiidol from "../Component/Images/murti-&-Idol.jpg";
+import decoration from "../Component/Images/decoration.jpg";
+import garbadress from "../Component/Images/garba-dress.jpg";
+import event from "../Component/Images/event.jpg";
 
 export default function Home() {
   const audioRef = useRef(null);
@@ -43,17 +46,6 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  const toggleAudio = () => {
-    if (!audioRef.current) return;
-    if (isPlaying) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-    } else {
-      audioRef.current.play().catch(() => {});
-      setIsPlaying(true);
-    }
-  };
-
   const handleSearch = async () => {
     if (!searchQuery) return setSearchResults([]);
     try {
@@ -69,9 +61,7 @@ export default function Home() {
     <Box sx={{ bgcolor: "#f3f4f6", minHeight: "100vh" }}>
       <audio ref={audioRef} src="/ganesh-vandana.mp3" loop />
 
-      {/* ✅ Navbar REMOVED here */}
-
-      {/* Search Results */}
+      {/* ✅ Search Results */}
       {searchResults.length > 0 && (
         <Container sx={{ py: 5 }}>
           <Typography variant="h5" mb={3} sx={{ color: "#b45309" }}>
@@ -104,7 +94,7 @@ export default function Home() {
         </Container>
       )}
 
-      {/* Main Content */}
+      {/* ✅ Main Content */}
       <Slider />
 
       <Container maxWidth="xl" sx={{ mt: 6 }}>
@@ -112,23 +102,24 @@ export default function Home() {
           Shop by Category
         </Typography>
         <Grid container spacing={3} justifyContent="center">
-          {[{ title: "Murti & Idols", img: "/murti.jpg" },
-            { title: "Decorations", img: "/decoration.jpg" },
-            { title: "Event Booking", img: "/event.jpg" },
-            { title: "Garba Dresses", img: "/dress.jpg" }]
-            .map(cat => (
-              <Grid item xs={6} sm={3} key={cat.title}>
-                <Paper
-                  elevation={4}
-                  sx={{
-                    p: 2, textAlign: "center", borderRadius: 3,
-                    transition: "0.3s", "&:hover": { transform: "scale(1.05)", boxShadow: 6 }
-                  }}
-                >
-                  <img src={cat.img} alt={cat.title} style={{ width: "100%", borderRadius: 12, height: 140, objectFit: "cover" }} />
-                  <Typography variant="subtitle1" fontWeight="bold" mt={2}>{cat.title}</Typography>
-                </Paper>
-              </Grid>
+          {[
+            { title: "Murti & Idols", img: murtiidol },
+            { title: "Decorations", img: decoration },
+            { title: "Event Booking", img: event },
+            { title: "Garba Dresses", img: garbadress }
+          ].map(cat => (
+            <Grid item xs={6} sm={3} key={cat.title}>
+              <Paper
+                elevation={4}
+                sx={{
+                  p: 2, textAlign: "center", borderRadius: 3,
+                  transition: "0.3s", "&:hover": { transform: "scale(1.05)", boxShadow: 6 }
+                }}
+              >
+                <img src={cat.img} alt={cat.title} style={{ width: "100%", borderRadius: 12, height: 140, objectFit: "cover" }} />
+                <Typography variant="subtitle1" fontWeight="bold" mt={2}>{cat.title}</Typography>
+              </Paper>
+            </Grid>
           ))}
         </Grid>
 

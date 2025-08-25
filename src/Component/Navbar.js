@@ -56,7 +56,7 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [audio] = useState(new Audio("/vandana.mp3"));
+  const [audio] = useState(new Audio("/ganesh-vandana.mp3"));
   const [drawerSearchOpen, setDrawerSearchOpen] = useState(false);
 
   const navigate = useNavigate();

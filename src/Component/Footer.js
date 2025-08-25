@@ -50,7 +50,7 @@ export default function Footer() {
           {/* About */}
           <Grid item xs={12} md={3}>
             <Typography variant="h6" sx={{ color: primaryColor, mb: 2, fontWeight: 'bold' }}>
-              About Ganesh Murti
+              About UtsavAura
             </Typography>
             <Typography variant="body2">
               Authentic handcrafted Ganesh idols made with love and devotion.
@@ -78,10 +78,10 @@ export default function Footer() {
               Quick Links
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              <MuiLink href="#home" underline="hover" color="inherit">Home</MuiLink>
-              <MuiLink href="#products" underline="hover" color="inherit">Products</MuiLink>
-              <MuiLink href="#about" underline="hover" color="inherit">About Us</MuiLink>
-              <MuiLink href="#contact" underline="hover" color="inherit">Contact</MuiLink>
+              <MuiLink href="/" underline="hover" color="inherit">Home</MuiLink>
+              <MuiLink href="/products" underline="hover" color="inherit">Products</MuiLink>
+              <MuiLink href="/about" underline="hover" color="inherit">About Us</MuiLink>
+              <MuiLink href="/contact-us" underline="hover" color="inherit">Contact</MuiLink>
             </Box>
           </Grid>
 

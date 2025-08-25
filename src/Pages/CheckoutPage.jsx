@@ -24,6 +24,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { jwtDecode } from "jwt-decode";
+import QRimage from "../Component/Images/QR.jpg";
 
 // Helpers
 const priceForItem = (item) =>
@@ -66,7 +67,7 @@ export default function CheckoutPage() {
 
   // UPI details
   const [upiDetails, setUpiDetails] = useState({
-    transactionId: "",
+    utrNumber: "",
     payerUpiId: "",
   });
 
@@ -384,27 +385,40 @@ export default function CheckoutPage() {
               <Typography>Scan the QR below to pay:</Typography>
               <Box display="flex" justifyContent="center" my={2}>
                 <img
-                  src="/images/upi-qr.png"
+                  src={QRimage}
                   alt="UPI QR"
                   style={{ width: 200, height: 200 }}
                 />
               </Box>
+              {/* ✅ UTR Number Input */}
               <TextField
-                label="Transaction ID"
-                name="transactionId"
-                value={upiDetails.transactionId}
+                label="UTR Number"
+                name="utrNumber"
+                placeholder="Enter UTR / Transaction Number"
+                value={upiDetails.utrNumber}
                 onChange={handleUpiChange}
                 fullWidth
                 margin="dense"
               />
+              {/* ✅ Payer UPI ID Input */}
               <TextField
                 label="Your UPI ID"
                 name="payerUpiId"
+                placeholder="e.g. yourname@upi"
                 value={upiDetails.payerUpiId}
                 onChange={handleUpiChange}
                 fullWidth
                 margin="dense"
               />
+              {/* ✅ Note */}
+              <Typography
+                variant="caption"
+                color="error"
+                sx={{ display: "block", mt: 1 }}
+              >
+                ⚠️If the UTR number or UPI ID you provide is invalid, we will not consider your transaction as successful.
+You will need to initiate the payment again with correct details to complete your order.
+              </Typography>
             </>
           ) : (
             <Typography>
@@ -420,7 +434,7 @@ export default function CheckoutPage() {
             sx={{ bgcolor: brandColors.primary, fontWeight: "bold" }}
             disabled={
               paymentMethod === "upi" &&
-              (!upiDetails.transactionId || !upiDetails.payerUpiId)
+              (!upiDetails.utrNumber || !upiDetails.payerUpiId)
             }
             onClick={confirmOrder}
           >
