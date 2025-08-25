@@ -22,7 +22,7 @@ import axios from "axios";
 import { io } from "socket.io-client";
 import Papa from "papaparse";
 
-const socket = io("https://utsav-aura-backend-7.onrender.com/");
+const socket = io("https://utsav-aura-backend-7.onrender.com");
 
 const STATUS_COLORS = {
   Pending: "warning",
