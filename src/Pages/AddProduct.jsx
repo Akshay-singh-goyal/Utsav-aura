@@ -22,12 +22,13 @@ import {
 } from "@mui/material";
 import { Add, Delete } from "@mui/icons-material";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
+import { SketchPicker } from "react-color";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// Example: replace with your actual login check logic
-const isLoggedIn = () => localStorage.getItem("token"); 
+// Simple auth check
+const isLoggedIn = () => localStorage.getItem("token");
 
 export default function AdminPanel() {
   const [tab, setTab] = useState(0); // 0 = Decorations, 1 = Products
@@ -42,17 +43,22 @@ export default function AdminPanel() {
   const [products, setProducts] = useState([]);
   const [productForm, setProductForm] = useState({
     name: "",
-    price: "",
+    originalPrice: "",
+    discountPrice: "",
     description: "",
     category: "",
+    quantity: "",
+    color: "",
+    soldBy: "",
   });
   const [productImage, setProductImage] = useState(null);
   const [editId, setEditId] = useState(null);
 
   // -------------------- Modal --------------------
   const [openModal, setOpenModal] = useState(false);
+  const [showAdvancedColor, setShowAdvancedColor] = useState(false);
 
-  const categories = ["Garba", "Pooja Items", "Navratri Specials"];
+  const categories = ["Decoration", "Idols", "Clothes", "Accessories"];
 
   // -------------------- Fetch Data --------------------
   useEffect(() => {
@@ -62,7 +68,9 @@ export default function AdminPanel() {
 
   const fetchDecorations = async () => {
     try {
-      const res = await axios.get("https://utsav-aura-backend-7.onrender.com/api/admin/decorations");
+      const res = await axios.get(
+        "https://utsav-aura-backend-7.onrender.com/api/admin/decorations"
+      );
       setDecorations(res.data);
     } catch (err) {
       console.error(err);
@@ -72,7 +80,9 @@ export default function AdminPanel() {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("https://utsav-aura-backend-7.onrender.com/api/products");
+      const res = await axios.get(
+        "https://utsav-aura-backend-7.onrender.com/api/products"
+      );
       setProducts(res.data);
     } catch (err) {
       console.error(err);
@@ -80,30 +90,27 @@ export default function AdminPanel() {
     }
   };
 
-  // -------------------- Decorations Functions --------------------
+  // -------------------- Decorations Handlers --------------------
   const handleDecorationChange = (index, field, value) => {
     const updated = [...decorationItems];
     updated[index][field] = value;
     setDecorationItems(updated);
   };
 
-  const addDecorationField = () => {
+  const addDecorationField = () =>
     setDecorationItems([
       ...decorationItems,
       { name: "", description: "", priceBuy: "", priceRent: "", image: null },
     ]);
-  };
 
-  const removeDecorationField = (index) => {
+  const removeDecorationField = (index) =>
     setDecorationItems(decorationItems.filter((_, i) => i !== index));
-  };
 
   const submitDecorations = async () => {
     if (!isLoggedIn()) {
       toast.warning("Please login to add decorations");
       return;
     }
-
     try {
       const formData = new FormData();
       decorationItems.forEach((item) => {
@@ -120,9 +127,10 @@ export default function AdminPanel() {
         { headers: { "Content-Type": "multipart/form-data" } }
       );
 
-      // Append new items immediately to the admin view
       setDecorations([...decorations, ...res.data]);
-      setDecorationItems([{ name: "", description: "", priceBuy: "", priceRent: "", image: null }]);
+      setDecorationItems([
+        { name: "", description: "", priceBuy: "", priceRent: "", image: null },
+      ]);
       toast.success("Decorations added successfully!");
     } catch (err) {
       console.error(err);
@@ -132,30 +140,33 @@ export default function AdminPanel() {
 
   const deleteDecoration = async (id) => {
     if (!window.confirm("Delete this decoration?")) return;
-    await axios.delete(`https://utsav-aura-backend-7.onrender.com/api/admin/decorations/${id}`);
-    setDecorations(decorations.filter((d) => d._id !== id));
-    toast.info("Decoration deleted");
+    try {
+      await axios.delete(
+        `https://utsav-aura-backend-7.onrender.com/api/admin/decorations/${id}`
+      );
+      setDecorations(decorations.filter((d) => d._id !== id));
+      toast.info("Decoration deleted");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete decoration");
+    }
   };
 
-  // -------------------- Products Functions --------------------
+  // -------------------- Products Handlers --------------------
   const handleProductSubmit = async (e) => {
     e.preventDefault();
-    if (!isLoggedIn()) {
-      toast.warning("Please login to add products");
-      return;
-    }
 
-    if (!productForm.name || !productForm.price || !productForm.description || !productForm.category || (!productImage && !editId)) {
-      toast.error("Please fill all fields and upload an image");
-      return;
+    if (!isLoggedIn()) return toast.warning("Please login to add products");
+
+    if (!productForm.name || !productForm.originalPrice || !productForm.category) {
+      return toast.error("Please fill all required fields");
     }
 
     try {
       const formData = new FormData();
-      formData.append("name", productForm.name);
-      formData.append("price", productForm.price);
-      formData.append("description", productForm.description);
-      formData.append("category", productForm.category);
+      Object.keys(productForm).forEach((key) => {
+        formData.append(key, productForm[key] || "");
+      });
       if (productImage) formData.append("image", productImage);
 
       let res;
@@ -177,28 +188,57 @@ export default function AdminPanel() {
         toast.success("Product added successfully!");
       }
 
-      setProductForm({ name: "", price: "", description: "", category: "" });
+      // Reset form
+      setProductForm({
+        name: "",
+        originalPrice: "",
+        discountPrice: "",
+        description: "",
+        category: "",
+        quantity: "",
+        color: "",
+        soldBy: "",
+      });
       setProductImage(null);
       setEditId(null);
       setOpenModal(false);
     } catch (err) {
-      console.error(err);
-      toast.error("Failed to save product");
+      console.error(err.response || err);
+      toast.error(
+        err.response?.data?.error ||
+          "Failed to save product. Make sure all required fields are filled and image is uploaded."
+      );
     }
   };
 
   const handleEditProduct = (p) => {
     setEditId(p._id);
-    setProductForm({ name: p.name, price: p.price, description: p.description, category: p.category });
+    setProductForm({
+      name: p.name,
+      originalPrice: p.originalPrice,
+      discountPrice: p.discountPrice,
+      description: p.description,
+      category: p.category,
+      quantity: p.quantity,
+      color: p.color,
+      soldBy: p.soldBy,
+    });
     setProductImage(null);
     setOpenModal(true);
   };
 
   const deleteProduct = async (id) => {
     if (!window.confirm("Delete this product?")) return;
-    await axios.delete(`https://utsav-aura-backend-7.onrender.com/api/products/${id}`);
-    setProducts(products.filter((p) => p._id !== id));
-    toast.info("Product deleted");
+    try {
+      await axios.delete(
+        `https://utsav-aura-backend-7.onrender.com/api/products/${id}`
+      );
+      setProducts(products.filter((p) => p._id !== id));
+      toast.info("Product deleted");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete product");
+    }
   };
 
   const modalStyle = {
@@ -218,7 +258,12 @@ export default function AdminPanel() {
   return (
     <Container sx={{ py: 4 }}>
       <ToastContainer position="top-right" autoClose={2000} />
-      <Typography variant="h4" gutterBottom textAlign="center" sx={{ color: "#0f79af" }}>
+      <Typography
+        variant="h4"
+        gutterBottom
+        textAlign="center"
+        sx={{ color: "#0f79af" }}
+      >
         Admin Panel
       </Typography>
 
@@ -237,14 +282,22 @@ export default function AdminPanel() {
       {tab === 0 && (
         <Paper elevation={3} sx={{ p: 2, mb: 4, bgcolor: "#f5f5f5" }}>
           {decorationItems.map((item, idx) => (
-            <Grid container spacing={1} key={idx} alignItems="center" sx={{ mb: 1 }}>
+            <Grid
+              container
+              spacing={1}
+              key={idx}
+              alignItems="center"
+              sx={{ mb: 1 }}
+            >
               <Grid item xs={12} sm={6} md={2}>
                 <TextField
                   label="Name"
                   fullWidth
                   size="small"
                   value={item.name}
-                  onChange={(e) => handleDecorationChange(idx, "name", e.target.value)}
+                  onChange={(e) =>
+                    handleDecorationChange(idx, "name", e.target.value)
+                  }
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={3}>
@@ -253,7 +306,9 @@ export default function AdminPanel() {
                   fullWidth
                   size="small"
                   value={item.description}
-                  onChange={(e) => handleDecorationChange(idx, "description", e.target.value)}
+                  onChange={(e) =>
+                    handleDecorationChange(idx, "description", e.target.value)
+                  }
                 />
               </Grid>
               <Grid item xs={6} sm={3} md={2}>
@@ -263,7 +318,9 @@ export default function AdminPanel() {
                   fullWidth
                   size="small"
                   value={item.priceBuy}
-                  onChange={(e) => handleDecorationChange(idx, "priceBuy", e.target.value)}
+                  onChange={(e) =>
+                    handleDecorationChange(idx, "priceBuy", e.target.value)
+                  }
                 />
               </Grid>
               <Grid item xs={6} sm={3} md={2}>
@@ -273,34 +330,55 @@ export default function AdminPanel() {
                   fullWidth
                   size="small"
                   value={item.priceRent}
-                  onChange={(e) => handleDecorationChange(idx, "priceRent", e.target.value)}
+                  onChange={(e) =>
+                    handleDecorationChange(idx, "priceRent", e.target.value)
+                  }
                 />
               </Grid>
               <Grid item xs={6} sm={3} md={2}>
-                <Button variant="contained" component="label" fullWidth size="small" sx={{ bgcolor: "#0f79af" }}>
+                <Button
+                  variant="contained"
+                  component="label"
+                  fullWidth
+                  size="small"
+                  sx={{ bgcolor: "#0f79af" }}
+                >
                   Upload Image
-                  <input type="file" hidden onChange={(e) => handleDecorationChange(idx, "image", e.target.files[0])} />
+                  <input
+                    type="file"
+                    hidden
+                    onChange={(e) =>
+                      handleDecorationChange(idx, "image", e.target.files[0])
+                    }
+                  />
                 </Button>
               </Grid>
               <Grid item xs={6} sm={3} md={1}>
                 {decorationItems.length > 1 && (
-                  <IconButton color="error" onClick={() => removeDecorationField(idx)}>
+                  <IconButton
+                    color="error"
+                    onClick={() => removeDecorationField(idx)}
+                  >
                     <Delete />
                   </IconButton>
                 )}
               </Grid>
             </Grid>
           ))}
+
           <Stack direction={{ xs: "column", sm: "row" }} spacing={1} mt={2}>
             <Button startIcon={<Add />} variant="outlined" onClick={addDecorationField}>
               Add Field
             </Button>
-            <Button variant="contained" onClick={submitDecorations} sx={{ bgcolor: "#0f79af" }}>
+            <Button
+              variant="contained"
+              onClick={submitDecorations}
+              sx={{ bgcolor: "#0f79af" }}
+            >
               Submit All
             </Button>
           </Stack>
 
-          {/* Display all added decorations */}
           <Grid container spacing={2} sx={{ mt: 3 }}>
             {decorations.map((d) => (
               <Grid item xs={12} sm={6} md={4} key={d._id}>
@@ -309,7 +387,9 @@ export default function AdminPanel() {
                   <CardContent>
                     <Typography variant="h6">{d.name}</Typography>
                     <Typography variant="body2">{d.description}</Typography>
-                    <Typography variant="subtitle1">₹{d.priceBuy} / ₹{d.priceRent}</Typography>
+                    <Typography variant="subtitle1">
+                      ₹{d.priceBuy} / ₹{d.priceRent}
+                    </Typography>
                     <Box mt={1} display="flex" justifyContent="space-between">
                       <IconButton color="error" onClick={() => deleteDecoration(d._id)}>
                         <FiTrash2 />
@@ -343,8 +423,10 @@ export default function AdminPanel() {
                   <CardContent>
                     <Typography variant="h6">{p.name}</Typography>
                     <Typography variant="body2">{p.description}</Typography>
-                    <Typography variant="subtitle1">₹{p.price}</Typography>
-                    <Typography variant="caption">Category: {p.category}</Typography>
+                    <Typography variant="subtitle1">₹{p.originalPrice}</Typography>
+                    <Typography variant="caption">
+                      Category: {p.category} | Color: {p.color || "-"}
+                    </Typography>
                     <Box mt={1} display="flex" justifyContent="space-between">
                       <IconButton color="primary" onClick={() => handleEditProduct(p)}>
                         <FiEdit />
@@ -368,6 +450,7 @@ export default function AdminPanel() {
             {editId ? "Edit Product" : "Add Product"}
           </Typography>
           <form onSubmit={handleProductSubmit}>
+            {/* Name, Price, Description */}
             <TextField
               fullWidth
               label="Name"
@@ -378,11 +461,20 @@ export default function AdminPanel() {
             />
             <TextField
               fullWidth
-              label="Price"
+              label="Original Price"
               type="number"
               size="small"
-              value={productForm.price}
-              onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
+              value={productForm.originalPrice}
+              onChange={(e) => setProductForm({ ...productForm, originalPrice: e.target.value })}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              fullWidth
+              label="Discount Price"
+              type="number"
+              size="small"
+              value={productForm.discountPrice}
+              onChange={(e) => setProductForm({ ...productForm, discountPrice: e.target.value })}
               sx={{ mb: 2 }}
             />
             <TextField
@@ -408,11 +500,81 @@ export default function AdminPanel() {
                 ))}
               </Select>
             </FormControl>
-            <Button variant="contained" component="label" fullWidth sx={{ mb: 2, bgcolor: "#0f79af" }}>
+            <TextField
+              fullWidth
+              label="Quantity"
+              type="number"
+              size="small"
+              value={productForm.quantity}
+              onChange={(e) => setProductForm({ ...productForm, quantity: e.target.value })}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              fullWidth
+              label="Sold By"
+              size="small"
+              value={productForm.soldBy}
+              onChange={(e) => setProductForm({ ...productForm, soldBy: e.target.value })}
+              sx={{ mb: 2 }}
+            />
+
+            {/* Color Picker */}
+            <Box display="flex" alignItems="center" gap={2} sx={{ mb: 2 }}>
+              <input
+                type="color"
+                value={/^#/.test(productForm.color) ? productForm.color : "#000000"}
+                onChange={(e) => setProductForm({ ...productForm, color: e.target.value })}
+                style={{ width: 60, height: 40, border: "none", cursor: "pointer", borderRadius: 6 }}
+              />
+              <TextField
+                label="Custom Color (Hex/Name)"
+                size="small"
+                fullWidth
+                value={productForm.color}
+                onChange={(e) => setProductForm({ ...productForm, color: e.target.value })}
+              />
+              <Box
+                sx={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: "50%",
+                  border: "1px solid #ccc",
+                  bgcolor: productForm.color || "#fff",
+                }}
+              />
+            </Box>
+
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={() => setShowAdvancedColor(!showAdvancedColor)}
+              sx={{ mb: 2 }}
+            >
+              {showAdvancedColor ? "Hide Advanced Picker" : "Show Advanced Picker"}
+            </Button>
+            {showAdvancedColor && (
+              <Box sx={{ mb: 2 }}>
+                <SketchPicker
+                  color={productForm.color || "#000000"}
+                  onChangeComplete={(color) =>
+                    setProductForm({ ...productForm, color: color.hex })
+                  }
+                />
+              </Box>
+            )}
+
+            {/* Upload Image */}
+            <Button
+              variant="contained"
+              component="label"
+              fullWidth
+              sx={{ mb: 2, bgcolor: "#0f79af" }}
+            >
               Upload Image
               <input type="file" hidden onChange={(e) => setProductImage(e.target.files[0])} />
             </Button>
-            <Button type="submit" variant="contained" color="primary" fullWidth sx={{ bgcolor: "#0f79af" }}>
+
+            <Button type="submit" variant="contained" fullWidth sx={{ bgcolor: "#0f79af" }}>
               {editId ? "Update Product" : "Add Product"}
             </Button>
           </form>

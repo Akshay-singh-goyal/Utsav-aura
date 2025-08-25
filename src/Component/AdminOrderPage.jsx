@@ -15,14 +15,15 @@ import {
   FormControl,
   InputLabel,
   Collapse,
-  IconButton
+  IconButton,
 } from "@mui/material";
 import { ExpandMore, ExpandLess } from "@mui/icons-material";
 import axios from "axios";
 import { io } from "socket.io-client";
 import Papa from "papaparse";
 
-const socket = io("https://utsav-aura-backend-7.onrender.com");
+// Socket connection
+const socket = io("https://utsav-aura-backend-7.onrender.com/");
 
 const STATUS_COLORS = {
   Pending: "warning",
@@ -41,24 +42,36 @@ export default function AdminOrdersEnhanced() {
   const [statusFilter, setStatusFilter] = useState("");
   const [paymentFilter, setPaymentFilter] = useState("");
 
+  const token = localStorage.getItem("token"); // Make sure token exists
+
   // Fetch orders
   const fetchOrders = useCallback(async () => {
     try {
-      const res = await axios.get("https://utsav-aura-backend-7.onrender.com/api/orders/all");
+      const res = await axios.get(
+        "https://utsav-aura-backend-7.onrender.com/api/orders/all",
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       setOrders(res.data || []);
     } catch (err) {
       console.error("Failed to fetch orders:", err);
+      alert("Failed to fetch orders. Check console.");
     }
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     fetchOrders();
 
     socket.on("orderUpdated", (updatedOrder) => {
-      setOrders(prev => {
-        const exists = prev.find(o => o._id === updatedOrder._id);
-        if (exists) return prev.map(o => (o._id === updatedOrder._id ? updatedOrder : o));
-        return [updatedOrder, ...prev].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      setOrders((prev) => {
+        const exists = prev.find((o) => o._id === updatedOrder._id);
+        if (exists) {
+          return prev.map((o) =>
+            o._id === updatedOrder._id ? updatedOrder : o
+          );
+        }
+        return [updatedOrder, ...prev].sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
       });
     });
 
@@ -66,10 +79,22 @@ export default function AdminOrdersEnhanced() {
   }, [fetchOrders]);
 
   const updateStatus = async (orderId, newStatus) => {
+    if (!token) {
+      alert("Please login to update order.");
+      return;
+    }
+
     try {
-      await axios.patch(`https://utsav-aura-backend-7.onrender.com/api/orders/status/${orderId}`, { status: newStatus });
-      setOrders(prev =>
-        prev.map(order => order._id === orderId ? { ...order, status: newStatus } : order)
+      await axios.patch(
+        `https://utsav-aura-backend-7.onrender.com/api/orders/status/${orderId}`,
+        { status: newStatus },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setOrders((prev) =>
+        prev.map((order) =>
+          order._id === orderId ? { ...order, status: newStatus } : order
+        )
       );
     } catch (err) {
       console.error("Failed to update status:", err);
@@ -78,11 +103,11 @@ export default function AdminOrdersEnhanced() {
   };
 
   const toggleExpand = (orderId) => {
-    setExpandedOrders(prev => ({ ...prev, [orderId]: !prev[orderId] }));
+    setExpandedOrders((prev) => ({ ...prev, [orderId]: !prev[orderId] }));
   };
 
   const filteredOrders = useMemo(() => {
-    return orders.filter(order => {
+    return orders.filter((order) => {
       const orderId = order.orderId || "";
       const userName = order.userId?.name || "";
       const userEmail = order.userId?.email || "";
@@ -92,8 +117,12 @@ export default function AdminOrdersEnhanced() {
         userName.toLowerCase().includes(search.toLowerCase()) ||
         userEmail.toLowerCase().includes(search.toLowerCase());
 
-      const matchesStatus = statusFilter ? order.status === statusFilter : true;
-      const matchesPayment = paymentFilter ? order.paymentMethod === paymentFilter : true;
+      const matchesStatus = statusFilter
+        ? order.status === statusFilter
+        : true;
+      const matchesPayment = paymentFilter
+        ? order.paymentMethod === paymentFilter
+        : true;
 
       return matchesSearch && matchesStatus && matchesPayment;
     });
@@ -111,17 +140,18 @@ export default function AdminOrdersEnhanced() {
   }, [totalPages, page]);
 
   const exportCSV = () => {
-    const data = filteredOrders.map(order => ({
+    const data = filteredOrders.map((order) => ({
       orderId: order.orderId,
       userName: order.userId?.name || "-",
       userEmail: order.userId?.email || "-",
-      total: order.total,
-      paymentMethod: order.paymentMethod,
+      total: order.total || 0,
+      paymentMethod: order.paymentMethod || "-",
       upiTxnId: order.upiDetails?.txnId || "-",
       upiOwner: order.upiDetails?.ownerName || "-",
       upiExtra: order.upiDetails?.extra || "-",
-      status: order.status,
+      status: order.status || "-",
     }));
+
     const csv = Papa.unparse(data);
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
@@ -160,8 +190,10 @@ export default function AdminOrdersEnhanced() {
             label="Status"
           >
             <MenuItem value="">All</MenuItem>
-            {Object.keys(STATUS_COLORS).map(status => (
-              <MenuItem key={status} value={status}>{status}</MenuItem>
+            {Object.keys(STATUS_COLORS).map((status) => (
+              <MenuItem key={status} value={status}>
+                {status}
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -190,14 +222,16 @@ export default function AdminOrdersEnhanced() {
 
       {/* Orders List */}
       <Stack spacing={3}>
-        {paginatedOrders.map(order => (
+        {paginatedOrders.map((order) => (
           <Card
             key={order._id}
             sx={{
               boxShadow: 3,
               transition: "transform 0.3s, box-shadow 0.3s",
               "&:hover": { transform: "translateY(-3px)", boxShadow: 6 },
-              borderLeft: `5px solid ${STATUS_COLORS[order.status] || "#000"}`,
+              borderLeft: `5px solid ${
+                STATUS_COLORS[order.status] || "#000"
+              }`,
               overflow: "hidden",
             }}
           >
@@ -211,28 +245,60 @@ export default function AdminOrdersEnhanced() {
                 <Typography variant="subtitle1" fontWeight="bold">
                   Order ID: {order.orderId}
                 </Typography>
-                <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
-                  <Chip label={order.status} color={STATUS_COLORS[order.status]} />
-                  <IconButton onClick={() => toggleExpand(order._id)} size="small">
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  flexWrap="wrap"
+                >
+                  <Chip
+                    label={order.status}
+                    color={STATUS_COLORS[order.status]}
+                  />
+                  <IconButton
+                    onClick={() => toggleExpand(order._id)}
+                    size="small"
+                  >
                     {expandedOrders[order._id] ? <ExpandLess /> : <ExpandMore />}
                   </IconButton>
                 </Stack>
               </Stack>
 
-              <Collapse in={expandedOrders[order._id]} timeout="auto" unmountOnExit>
+              <Collapse
+                in={expandedOrders[order._id]}
+                timeout="auto"
+                unmountOnExit
+              >
                 <Divider sx={{ my: 1 }} />
                 <Typography variant="body2">
-                  <strong>User:</strong> {order.userId?.name || "-"} ({order.userId?.email || "-"})
+                  <strong>User:</strong> {order.userId?.name || "-"} (
+                  {order.userId?.email || "-"})
                 </Typography>
                 <Typography variant="body2">
-                  <strong>Total:</strong> ₹{order.total || 0} | <strong>Payment:</strong> {order.paymentMethod || "-"}
+                  <strong>Total:</strong> ₹{order.total || 0} |{" "}
+                  <strong>Payment:</strong> {order.paymentMethod || "-"}
                 </Typography>
 
                 {order.paymentMethod === "upi" && order.upiDetails && (
-                  <Box sx={{ mt: 1, p: 1, border: "1px dashed #ccc", borderRadius: 1 }}>
-                    <Typography variant="body2"><strong>UPI Transaction ID:</strong> {order.upiDetails.txnId || "-"}</Typography>
-                    <Typography variant="body2"><strong>UPI Owner Name:</strong> {order.upiDetails.ownerName || "-"}</Typography>
-                    <Typography variant="body2"><strong>Extra Info:</strong> {order.upiDetails.extra || "-"}</Typography>
+                  <Box
+                    sx={{
+                      mt: 1,
+                      p: 1,
+                      border: "1px dashed #ccc",
+                      borderRadius: 1,
+                    }}
+                  >
+                    <Typography variant="body2">
+                      <strong>UPI Transaction ID:</strong>{" "}
+                      {order.upiDetails.txnId || "-"}
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong>UPI Owner Name:</strong>{" "}
+                      {order.upiDetails.ownerName || "-"}
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong>Extra Info:</strong> {order.upiDetails.extra || "-"}
+                    </Typography>
                   </Box>
                 )}
 
@@ -241,8 +307,11 @@ export default function AdminOrdersEnhanced() {
                 <Stack spacing={0.5} sx={{ pl: 1 }}>
                   {order.items?.map((item, idx) => (
                     <Typography key={item._id || item.productId || idx}>
-                      {item.name} ({item.mode || "Buy"}) x {item.quantity || 1} | ₹{item.price || 0}
-                      {item.mode === "Rent" && item.rentalDays ? ` [${item.rentalDays} days]` : ""}
+                      {item.name} ({item.mode || "Buy"}) x {item.quantity || 1} | ₹
+                      {item.price || 0}
+                      {item.mode === "Rent" && item.rentalDays
+                        ? ` [${item.rentalDays} days]`
+                        : ""}
                     </Typography>
                   ))}
                 </Stack>
@@ -253,7 +322,7 @@ export default function AdminOrdersEnhanced() {
                   flexWrap="wrap"
                   sx={{ mt: 2 }}
                 >
-                  {Object.keys(STATUS_COLORS).map(status => (
+                  {Object.keys(STATUS_COLORS).map((status) => (
                     <Button
                       key={status}
                       size="small"
@@ -273,10 +342,25 @@ export default function AdminOrdersEnhanced() {
       </Stack>
 
       {/* Pagination */}
-      <Stack direction="row" spacing={2} justifyContent="center" flexWrap="wrap" sx={{ mt: 3 }}>
-        <Button disabled={page <= 1} onClick={() => setPage(prev => prev - 1)}>Previous</Button>
-        <Typography variant="body2" sx={{ mt: 1 }}>{page} / {totalPages || 1}</Typography>
-        <Button disabled={page >= totalPages} onClick={() => setPage(prev => prev + 1)}>Next</Button>
+      <Stack
+        direction="row"
+        spacing={2}
+        justifyContent="center"
+        flexWrap="wrap"
+        sx={{ mt: 3 }}
+      >
+        <Button disabled={page <= 1} onClick={() => setPage((prev) => prev - 1)}>
+          Previous
+        </Button>
+        <Typography variant="body2" sx={{ mt: 1 }}>
+          {page} / {totalPages || 1}
+        </Typography>
+        <Button
+          disabled={page >= totalPages}
+          onClick={() => setPage((prev) => prev + 1)}
+        >
+          Next
+        </Button>
       </Stack>
     </Container>
   );

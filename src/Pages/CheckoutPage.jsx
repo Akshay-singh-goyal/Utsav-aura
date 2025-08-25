@@ -23,7 +23,7 @@ import { Info, Payment, ShoppingCart } from "@mui/icons-material";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import QRimage from "../Component/Images/QR.jpg";
 
 // Helpers
@@ -38,8 +38,8 @@ const inr = (num) =>
   );
 
 const brandColors = {
-  primary: "#FF9900", // Amazon orange
-  secondary: "#2874f0", // Flipkart blue
+  primary: "#FF9900",
+  secondary: "#2874f0",
 };
 
 export default function CheckoutPage() {
@@ -67,11 +67,12 @@ export default function CheckoutPage() {
 
   // UPI details
   const [upiDetails, setUpiDetails] = useState({
-    utrNumber: "",
-    payerUpiId: "",
+    txnId: "",
+    ownerName: "",
+    extra: "",
   });
 
-  // ✅ Load cart + user
+  // Load cart + user
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     const token = localStorage.getItem("token");
@@ -84,7 +85,6 @@ export default function CheckoutPage() {
 
     let finalUser = storedUser;
 
-    // If _id missing → decode from token
     if (token && (!storedUser || !storedUser._id)) {
       try {
         const decoded = jwtDecode(token);
@@ -156,6 +156,16 @@ export default function CheckoutPage() {
   const confirmOrder = async () => {
     const token = localStorage.getItem("token");
 
+    // Map frontend UPI fields to backend
+    const mappedUpiDetails =
+      paymentMethod === "upi"
+        ? {
+            txnId: upiDetails.txnId,
+            ownerName: upiDetails.ownerName,
+            extra: upiDetails.extra || "",
+          }
+        : null;
+
     const payload = {
       userId: user._id,
       items: cart.map((i) => ({
@@ -170,7 +180,7 @@ export default function CheckoutPage() {
       paymentMethod,
       total: grandTotal,
       note,
-      upiDetails: paymentMethod === "upi" ? upiDetails : null,
+      upiDetails: mappedUpiDetails,
     };
 
     try {
@@ -255,21 +265,9 @@ export default function CheckoutPage() {
               value={paymentMethod}
               onChange={(e) => setPaymentMethod(e.target.value)}
             >
-              <FormControlLabel
-                value="cod"
-                control={<Radio />}
-                label="Cash on Delivery"
-              />
-              <FormControlLabel
-                value="upi"
-                control={<Radio />}
-                label="UPI / Wallet"
-              />
-              <FormControlLabel
-                value="card"
-                control={<Radio />}
-                label="Credit / Debit Card"
-              />
+              <FormControlLabel value="cod" control={<Radio />} label="Cash on Delivery" />
+              <FormControlLabel value="upi" control={<Radio />} label="UPI / Wallet" />
+              <FormControlLabel value="card" control={<Radio />} label="Credit / Debit Card" />
             </RadioGroup>
 
             <TextField
@@ -302,37 +300,17 @@ export default function CheckoutPage() {
 
         {/* Right: Summary */}
         <Grid item xs={12} md={6}>
-          <Card
-            sx={{
-              p: 3,
-              borderRadius: 3,
-              boxShadow: 3,
-              position: "sticky",
-              top: 24,
-            }}
-          >
-            <Typography
-              variant="h6"
-              sx={{ mb: 2, color: brandColors.primary, fontWeight: "bold" }}
-            >
+          <Card sx={{ p: 3, borderRadius: 3, boxShadow: 3, position: "sticky", top: 24 }}>
+            <Typography variant="h6" sx={{ mb: 2, color: brandColors.primary, fontWeight: "bold" }}>
               Order Summary
             </Typography>
             <Divider sx={{ mb: 2 }} />
 
             {cart.map((i) => {
               const unit = priceForItem(i);
-              const lineTotal =
-                unit *
-                (i.quantity || 1) *
-                (i.mode === "Rent" ? i.rentalDays || 1 : 1);
+              const lineTotal = unit * (i.quantity || 1) * (i.mode === "Rent" ? i.rentalDays || 1 : 1);
               return (
-                <Box
-                  key={i._id}
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  mb={2}
-                >
+                <Box key={i._id} display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                   <Box display="flex" alignItems="center">
                     <CardMedia
                       component="img"
@@ -341,8 +319,7 @@ export default function CheckoutPage() {
                       alt={i.name}
                     />
                     <Typography variant="body2">
-                      {i.name} ({i.mode || "Buy"}) x {i.quantity || 1}{" "}
-                      {i.mode === "Rent" ? `[${i.rentalDays} days]` : ""}
+                      {i.name} ({i.mode || "Buy"}) x {i.quantity || 1} {i.mode === "Rent" ? `[${i.rentalDays} days]` : ""}
                     </Typography>
                   </Box>
                   <Typography variant="body2">{inr(lineTotal)}</Typography>
@@ -362,69 +339,51 @@ export default function CheckoutPage() {
             <Divider sx={{ my: 2 }} />
             <Box display="flex" justifyContent="space-between">
               <Typography variant="h6">Total</Typography>
-              <Typography variant="h6" color="error">
-                {inr(grandTotal)}
-              </Typography>
+              <Typography variant="h6" color="error">{inr(grandTotal)}</Typography>
             </Box>
           </Card>
         </Grid>
       </Grid>
 
       {/* Payment Dialog */}
-      <Dialog
-        open={openPaymentDialog}
-        onClose={() => setOpenPaymentDialog(false)}
-        fullWidth
-      >
-        <DialogTitle>
-          {paymentMethod === "upi" ? "UPI / Wallet Payment" : "Complete Payment"}
-        </DialogTitle>
+      <Dialog open={openPaymentDialog} onClose={() => setOpenPaymentDialog(false)} fullWidth>
+        <DialogTitle>{paymentMethod === "upi" ? "UPI / Wallet Payment" : "Complete Payment"}</DialogTitle>
         <DialogContent>
           {paymentMethod === "upi" ? (
             <>
+              <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: "bold" }}>
+                Total Payable: <span style={{ color: "green" }}>{inr(grandTotal)}</span>
+              </Typography>
+
               <Typography>Scan the QR below to pay:</Typography>
               <Box display="flex" justifyContent="center" my={2}>
-                <img
-                  src={QRimage}
-                  alt="UPI QR"
-                  style={{ width: 200, height: 200 }}
-                />
+                <img src={QRimage} alt="UPI QR" style={{ width: 200, height: 200 }} />
               </Box>
-              {/* ✅ UTR Number Input */}
+
               <TextField
                 label="UTR Number"
-                name="utrNumber"
+                name="txnId"
                 placeholder="Enter UTR / Transaction Number"
-                value={upiDetails.utrNumber}
+                value={upiDetails.txnId}
                 onChange={handleUpiChange}
                 fullWidth
                 margin="dense"
               />
-              {/* ✅ Payer UPI ID Input */}
               <TextField
                 label="Your UPI ID"
-                name="payerUpiId"
+                name="ownerName"
                 placeholder="e.g. yourname@upi"
-                value={upiDetails.payerUpiId}
+                value={upiDetails.ownerName}
                 onChange={handleUpiChange}
                 fullWidth
                 margin="dense"
               />
-              {/* ✅ Note */}
-              <Typography
-                variant="caption"
-                color="error"
-                sx={{ display: "block", mt: 1 }}
-              >
-                ⚠️If the UTR number or UPI ID you provide is invalid, we will not consider your transaction as successful.
-You will need to initiate the payment again with correct details to complete your order.
+              <Typography variant="caption" color="error" sx={{ display: "block", mt: 1 }}>
+                ⚠️If the UTR number or UPI ID you provide is invalid, we will not consider your transaction as successful. You will need to initiate the payment again with correct details to complete your order.
               </Typography>
             </>
           ) : (
-            <Typography>
-              You selected <b>{paymentMethod.toUpperCase()}</b>. Please confirm
-              your payment to place the order.
-            </Typography>
+            <Typography>You selected <b>{paymentMethod.toUpperCase()}</b>. Please confirm your payment to place the order.</Typography>
           )}
         </DialogContent>
         <DialogActions>
@@ -432,10 +391,7 @@ You will need to initiate the payment again with correct details to complete you
           <Button
             variant="contained"
             sx={{ bgcolor: brandColors.primary, fontWeight: "bold" }}
-            disabled={
-              paymentMethod === "upi" &&
-              (!upiDetails.utrNumber || !upiDetails.payerUpiId)
-            }
+            disabled={paymentMethod === "upi" && (!upiDetails.txnId || !upiDetails.ownerName)}
             onClick={confirmOrder}
           >
             Confirm Payment
