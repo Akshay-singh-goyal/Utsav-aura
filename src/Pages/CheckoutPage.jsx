@@ -126,7 +126,7 @@ export default function CheckoutPage() {
     [cart]
   );
 
-  const delivery = subTotal > 999 ? 75 : 90 || subTotal > 1500 ? 70 : 90 ;
+  const delivery = subTotal > 999 ? 75 : 90 ;
   const grandTotal = subTotal + delivery;
 
   // Place order
