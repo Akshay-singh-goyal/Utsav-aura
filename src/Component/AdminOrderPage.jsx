@@ -308,7 +308,7 @@ export default function AdminOrdersEnhanced() {
                   {order.items?.map((item, idx) => (
                     <Typography key={item._id || item.productId || idx}>
                       {item.name} ({item.mode || "Buy"}) x {item.quantity || 1} | ₹
-                      {item.price || 0}
+                      {item.price || item.discountprice}
                       {item.mode === "Rent" && item.rentalDays
                         ? ` [${item.rentalDays} days]`
                         : ""}
