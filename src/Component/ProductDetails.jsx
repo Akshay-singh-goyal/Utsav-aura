@@ -1,3 +1,4 @@
+// src/pages/ProductDetails.jsx
 import React, { useEffect, useState } from "react";
 import {
   Container,
@@ -28,11 +29,14 @@ export default function ProductDetails() {
 
   useEffect(() => {
     fetchProduct();
+    // eslint-disable-next-line
   }, []);
 
   const fetchProduct = async () => {
     try {
-      const res = await axios.get(`https://utsav-aura-backend-7.onrender.com/api/products/${id}`);
+      const res = await axios.get(
+        `https://utsav-aura-backend-7.onrender.com/api/products/${id}`
+      );
       setProduct(res.data);
       setSelectedImage(res.data.image);
     } catch (err) {
@@ -48,17 +52,39 @@ export default function ProductDetails() {
       return;
     }
 
-    const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
-    const updatedCart = [...existingCart, { ...product, quantity: 1 }];
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const existing = cart.find((p) => p._id === product._id);
+
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      cart.push({ ...product, quantity: 1 });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
     toast.success("✅ Product added to cart!");
+  };
+
+  const handleBuyNow = () => {
+    if (!isLoggedIn) {
+      toast.warning("Please login to continue purchase.");
+      navigate("/login");
+      return;
+    }
+    navigate(`/checkout/${product._id}`);
   };
 
   if (!product) return <Typography>Loading...</Typography>;
 
+  // 🔹 Discount Calculation
+  const discountPercent = Math.round(
+    ((product.originalPrice - product.discountPrice) / product.originalPrice) * 100
+  );
+
   return (
     <Container sx={{ py: 5, backgroundColor: "#fefcf7", minHeight: "80vh" }}>
       <ToastContainer position="top-right" autoClose={2500} />
+
       <Box
         sx={{
           display: "flex",
@@ -66,7 +92,7 @@ export default function ProductDetails() {
           gap: 4,
         }}
       >
-        {/* Left: Images */}
+        {/* LEFT: Product Image */}
         <Box sx={{ flex: 1, maxWidth: 450 }}>
           <CardMedia
             component="img"
@@ -82,36 +108,11 @@ export default function ProductDetails() {
               backgroundColor: "#fff8f0",
             }}
           />
-
-          {/* Thumbnail gallery */}
-          {product.images && product.images.length > 1 && (
-            <Stack direction="row" spacing={1} flexWrap="wrap">
-              {product.images.map((img, idx) => (
-                <Box
-                  key={idx}
-                  component="img"
-                  src={img}
-                  alt={`Thumbnail ${idx + 1}`}
-                  sx={{
-                    width: 70,
-                    height: 70,
-                    objectFit: "cover",
-                    borderRadius: 1,
-                    border:
-                      selectedImage === img
-                        ? "2px solid #fc8019"
-                        : "1px solid #ddd",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => setSelectedImage(img)}
-                />
-              ))}
-            </Stack>
-          )}
         </Box>
 
-        {/* Right: Details */}
+        {/* RIGHT: Product Details */}
         <Box sx={{ flex: 1.2 }}>
+          {/* Name */}
           <Typography
             variant="h4"
             fontWeight="700"
@@ -121,6 +122,7 @@ export default function ProductDetails() {
             {product.name}
           </Typography>
 
+          {/* Featured Badge */}
           {product.featured && (
             <Chip
               icon={<Star sx={{ color: "gold" }} />}
@@ -130,7 +132,7 @@ export default function ProductDetails() {
             />
           )}
 
-          {/* Rating */}
+          {/* Rating (static for now) */}
           <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
             <Rating value={4.5} precision={0.5} readOnly />
             <Typography variant="body2" sx={{ ml: 1, color: "#555" }}>
@@ -138,14 +140,38 @@ export default function ProductDetails() {
             </Typography>
           </Box>
 
-          {/* Price */}
-          <Typography
-            variant="h5"
-            fontWeight="700"
-            sx={{ mb: 1, color: "#fc8019" }}
-          >
-            ₹{product.price}
-          </Typography>
+          {/* Price Section */}
+          <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+            <Typography
+              variant="h5"
+              fontWeight="700"
+              sx={{ color: "#fc8019" }}
+            >
+              ₹{product.discountPrice}
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{ textDecoration: "line-through", color: "gray" }}
+            >
+              ₹{product.originalPrice}
+            </Typography>
+            <Chip
+              label={`${discountPercent}% Off`}
+              color="success"
+              size="small"
+            />
+          </Stack>
+
+          {/* Stock Availability */}
+          <Chip
+            label={
+              product.quantity > 0
+                ? `In Stock (${product.quantity})`
+                : "Out of Stock"
+            }
+            color={product.quantity > 0 ? "success" : "error"}
+            sx={{ mb: 3 }}
+          />
 
           {/* Description */}
           <Typography variant="body1" sx={{ mb: 4, color: "#555" }}>
@@ -161,23 +187,25 @@ export default function ProductDetails() {
               color="#4a3c1b"
             >
               <InfoOutlined sx={{ fontSize: 18, mr: 1 }} />
-              About this product
+              About this Product
             </Typography>
             <ul style={{ paddingLeft: 20, color: "#333" }}>
-              <li>High quality materials</li>
-              <li>Perfect for daily use or gifting</li>
               <li>Category: {product.category}</li>
+              {product.color && <li>Color: {product.color}</li>}
+              {product.soldBy && <li>Sold By: {product.soldBy}</li>}
+              <li>Quality assured and crafted with care</li>
             </ul>
           </Box>
 
           <Divider sx={{ mb: 3 }} />
 
-          {/* Buttons */}
+          {/* Action Buttons */}
           <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
             <Button
               variant="contained"
               size="large"
               onClick={handleAddToCart}
+              disabled={product.quantity === 0}
               sx={{
                 flex: "1 1 150px",
                 backgroundColor: "#fc8019",
@@ -190,12 +218,25 @@ export default function ProductDetails() {
             <Button
               variant="outlined"
               size="large"
-              onClick={() => navigate(-1)}
+              onClick={handleBuyNow}
+              disabled={product.quantity === 0}
               sx={{
                 flex: "1 1 150px",
                 borderColor: "#fc8019",
                 color: "#4a3c1b",
                 "&:hover": { backgroundColor: "#fc8019", color: "white" },
+                fontWeight: 700,
+              }}
+            >
+              Buy Now
+            </Button>
+            <Button
+              variant="text"
+              size="large"
+              onClick={() => navigate(-1)}
+              sx={{
+                flex: "1 1 150px",
+                color: "#fc8019",
                 fontWeight: 700,
               }}
             >

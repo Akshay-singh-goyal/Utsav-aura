@@ -39,9 +39,9 @@ const inr = (num) =>
 const getItemTotal = (item) => {
   const unitPrice =
     item.mode === "Rent"
-      ? Number(item.priceRent ?? item.price ?? 0)
-      : Number(item.priceBuy ?? item.price ?? item.priceRent ?? 0);
-  const quantity = Number(item.quantity ?? 1);
+      ? Number(item.priceRent ?? item.price ?? item.discountPrice)
+      : Number(item.priceBuy ?? item.price ?? item.discountPrice);
+  const quantity = Number(item.quantity ?? 1);  
   const rentalDays = item.mode === "Rent" ? Number(item.rentalDays ?? 1) : 1;
   return unitPrice * quantity * rentalDays;
 };

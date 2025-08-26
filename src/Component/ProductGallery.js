@@ -1,3 +1,4 @@
+// src/pages/ProductGallery.jsx
 import React, { useEffect, useState } from "react";
 import {
   Container,
@@ -12,6 +13,8 @@ import {
   Button,
   Box,
   Stack,
+  Chip,
+  Divider,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
@@ -36,7 +39,9 @@ export default function ProductGallery() {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("https://utsav-aura-backend-7.onrender.com/api/products");
+      const res = await axios.get(
+        "https://utsav-aura-backend-7.onrender.com/api/products"
+      );
       setProducts(res.data);
     } catch (err) {
       console.error(err);
@@ -67,7 +72,7 @@ export default function ProductGallery() {
     toast.success(`${product.name} added to cart!`);
   };
 
-  // ✅ Buy Now: Navigate to product details
+  // ✅ Buy Now → Navigate to product details page
   const handleBuyNow = (itemId) => {
     if (!isLoggedIn) {
       toast.warning("Please login to buy products.");
@@ -123,8 +128,8 @@ export default function ProductGallery() {
           <Card
             key={p._id}
             sx={{
-              minWidth: 260,
-              maxWidth: 260,
+              minWidth: 280,
+              maxWidth: 280,
               flexShrink: 0,
               borderRadius: 3,
               boxShadow: 4,
@@ -135,27 +140,72 @@ export default function ProductGallery() {
               },
             }}
           >
+            {/* Product Image */}
             <CardMedia
               component="img"
-              height="180"
+              height="200"
               image={p.image}
               alt={p.name}
               sx={{ borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
             />
+
+            {/* Product Details */}
             <CardContent>
               <Typography variant="h6" fontWeight="bold" color="#4a3c1b">
                 {p.name}
               </Typography>
+
+              {/* Price with Discount */}
+              <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 1 }}>
+                <Typography
+                  variant="subtitle1"
+                  sx={{ textDecoration: "line-through", color: "gray" }}
+                >
+                  ₹{p.originalPrice}
+                </Typography>
+                <Typography
+                  variant="h6"
+                  color="#fc8019"
+                  fontWeight="bold"
+                >
+                  ₹{p.discountPrice}
+                </Typography>
+              </Stack>
+
+              {/* Description */}
               <Typography
-                variant="subtitle1"
-                color="#fc8019"
-                sx={{ mt: 1, fontWeight: "bold" }}
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 1, height: 40, overflow: "hidden", textOverflow: "ellipsis" }}
               >
-                ₹{p.price}
+                {p.description}
               </Typography>
+
+              <Divider sx={{ my: 1 }} />
+
+              {/* Extra Details */}
               <Typography variant="caption" color="text.secondary">
                 Category: {p.category}
               </Typography>
+              <br />
+              {p.color && (
+                <Typography variant="caption" color="text.secondary">
+                  Color: {p.color}
+                </Typography>
+              )}
+              <br />
+              {p.soldBy && (
+                <Typography variant="caption" color="text.secondary">
+                  Sold By: {p.soldBy}
+                </Typography>
+              )}
+              <br />
+              <Chip
+                size="small"
+                label={p.quantity > 0 ? `In Stock (${p.quantity})` : "Out of Stock"}
+                color={p.quantity > 0 ? "success" : "error"}
+                sx={{ mt: 1 }}
+              />
 
               {/* Buttons */}
               <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
@@ -164,6 +214,7 @@ export default function ProductGallery() {
                   size="small"
                   startIcon={<ShoppingCartIcon />}
                   onClick={() => handleAddToCart(p)}
+                  disabled={p.quantity === 0}
                   sx={{
                     borderRadius: 2,
                     color: "#4a3c1b",
@@ -178,6 +229,7 @@ export default function ProductGallery() {
                   size="small"
                   startIcon={<FlashOnIcon />}
                   onClick={() => handleBuyNow(p._id)}
+                  disabled={p.quantity === 0}
                   sx={{
                     borderRadius: 2,
                     backgroundColor: "#fc8019",

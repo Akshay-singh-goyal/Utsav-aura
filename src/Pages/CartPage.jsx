@@ -53,7 +53,7 @@ export default function CartPage() {
 
   // Total price
   const total = cart.reduce(
-    (sum, item) => sum + (item.priceBuy || item.price || 0) * (item.quantity || 1),
+    (sum, item) => sum + (item.priceBuy || item.discountPrice || item.price) * (item.quantity || 1),
     0
   );
 
@@ -138,7 +138,7 @@ export default function CartPage() {
                   {item.name}
                 </Typography>
                 <Typography color="primary" fontWeight="bold">
-                  ₹{item.priceBuy || item.price}
+                  ₹{item.priceBuy || item.price ||  item.discountPrice}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Qty: {item.quantity || 1}

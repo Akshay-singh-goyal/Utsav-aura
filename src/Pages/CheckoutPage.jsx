@@ -29,8 +29,8 @@ import QRimage from "../Component/Images/QR.jpg";
 // Helpers
 const priceForItem = (item) =>
   item.mode === "Rent"
-    ? item.priceRent ?? item.price ?? 0
-    : item.priceBuy ?? item.price ?? 0;
+    ? item.priceRent ?? item.price ?? item.discountPrice
+    : item.priceBuy ?? item.price ?? item.discountPrice;
 
 const inr = (num) =>
   new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR" }).format(
