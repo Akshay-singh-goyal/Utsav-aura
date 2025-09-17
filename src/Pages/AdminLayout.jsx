@@ -9,6 +9,8 @@ import {
   ListItemText,
   IconButton,
   Tooltip,
+  Typography,
+  Divider,
 } from "@mui/material";
 import {
   Menu as MenuIcon,
@@ -34,6 +36,7 @@ const menuItems = [
   { text: "Categories", to: "/admin/category", icon: <CategoryIcon /> },
   { text: "Packages", to: "/admin/package", icon: <LocalOfferIcon /> },
   { text: "Customer Query", to: "/admin/admin-query", icon: <LocalOfferIcon /> },
+  { text: "Chatbot", to: "/admin/chatbot", icon: <LocalOfferIcon /> },
 ];
 
 function Sidebar({ isOpen, toggleSidebar }) {
@@ -92,6 +95,8 @@ function Sidebar({ isOpen, toggleSidebar }) {
           </IconButton>
         </Box>
 
+        <Divider sx={{ borderColor: "rgba(255,215,0,0.3)", mb: 2 }} />
+
         {/* Menu Items */}
         <List>
           {menuItems.map((item) => (
@@ -125,7 +130,6 @@ export function AdminLayout() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
-  // Fetch admin/user profile
   const fetchProfile = useCallback(async () => {
     if (!token) return;
     try {
@@ -133,7 +137,7 @@ export function AdminLayout() {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
-      if (data.success) setUserProfile(data.user);
+      if (data.user) setUserProfile(data.user);
       else navigate("/login");
     } catch (err) {
       console.error(err);
@@ -145,7 +149,6 @@ export function AdminLayout() {
     fetchProfile();
   }, [fetchProfile, refreshKey]);
 
-  // Logout handler
   const handleLogout = () => {
     localStorage.clear();
     setUserProfile(null);
@@ -192,21 +195,29 @@ export function AdminLayout() {
           }}
         >
           {userProfile && (
-            <Box sx={{ mb: 1, color: "#ffd700", display: "flex", alignItems: "center" }}>
-              <span style={{ marginRight: 10 }}>Hello, {userProfile.name}</span>
-              <button
-                style={{
-                  padding: "6px 12px",
-                  background: "#ffd700",
+            <Box
+              sx={{
+                mb: 1,
+                color: "#ffd700",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <Typography sx={{ mr: 2 }}>Hello, {userProfile.name}</Typography>
+              <Box
+                component="button"
+                onClick={handleLogout}
+                sx={{
+                  p: "6px 12px",
+                  bgcolor: "#ffd700",
                   border: "none",
-                  borderRadius: 4,
+                  borderRadius: 1,
                   cursor: "pointer",
                   fontWeight: "bold",
                 }}
-                onClick={handleLogout}
               >
                 Logout
-              </button>
+              </Box>
             </Box>
           )}
           <Tooltip title="Refresh Page">

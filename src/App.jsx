@@ -27,7 +27,8 @@ import ProductGallery from "./Component/ProductGallery";
 import ProductDetails from "./Component/ProductDetails";
 import DecorationGallery from "./Component/DecorationGallery";
 import DecorationDetail from "./Pages/DecorationDetail";
-import About from "./Pages/About";
+import UserChat from "./Component/UserChat";
+
 // Admin Pages
 import Dashboard from "./Pages/Dashboard";
 import Users from "./Pages/Users";
@@ -39,8 +40,10 @@ import AdminCategoryForm from "./Component/AdminCategoryForm";
 import AdminCreatePackage from "./Component/AdminPackage";
 import AdminQueries from "./Pages/AdminQueries";
 import ViewProfile from "./Pages/ViewProfile";
+import AdminChat from "./Component/AdminChat";
+import About from "./Pages/About";
 
-// Protected Route Component
+// ✅ Protected Route Component
 const ProtectedRoute = ({ children, role }) => {
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
@@ -53,7 +56,7 @@ export default function App() {
   const location = useLocation();
   const [user, setUser] = useState(null);
 
-  // Determine pages where Navbar/Footer should hide
+  // Pages where Navbar/Footer should be hidden
   const noLayoutPages = [
     "/login",
     "/signup",
@@ -92,7 +95,7 @@ export default function App() {
       />
 
       <Routes>
-        {/* Public Routes */}
+        {/* ----------------- Public Routes ----------------- */}
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login setUser={setUser} />} />
@@ -106,48 +109,17 @@ export default function App() {
         <Route path="/view-profile" element={<ViewProfile />} />
         <Route path="/about" element={<About />} />
 
-        {/* User Protected Routes */}
-        <Route
-          path="/cart"
-          element={
-           
-              <Cart />
-           
-          }
-        />
-        <Route
-          path="/checkout"
-          element={
-            
-              <CheckoutPage />
-           
-          }
-        />
-        <Route
-          path="/order-confirmation"
-          element={
-          
-              <OrderConfirmation />
-          
-          }
-        />
-        <Route
-          path="/my-order"
-          element={
-           
-              <MyOrdersPage />
-          }
-        />
-        <Route
-          path="/packages"
-          element={
-           
-              <PackageList />
-           
-          }
-        />
+        {/* ----------------- User Chat ----------------- */}
+        <Route path="/chat" element={<UserChat />} />
 
-        {/* Admin Routes */}
+        {/* ----------------- User Protected Routes ----------------- */}
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/order-confirmation" element={<OrderConfirmation />} />
+        <Route path="/my-order" element={<MyOrdersPage />} />
+        <Route path="/packages" element={<PackageList />} />
+
+        {/* ----------------- Admin Routes ----------------- */}
         <Route
           path="/admin/*"
           element={
@@ -166,9 +138,11 @@ export default function App() {
           <Route path="category" element={<AdminCategoryForm />} />
           <Route path="package" element={<AdminCreatePackage />} />
           <Route path="admin-query" element={<AdminQueries />} />
+          {/* ✅ Admin Chat Route fixed */}
+          <Route path="chatbot" element={<AdminChat />} />
         </Route>
 
-        {/* Fallback */}
+        {/* ----------------- Fallback ----------------- */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 

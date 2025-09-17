@@ -10,7 +10,7 @@ import {
   Divider,
   IconButton,
 } from '@mui/material';
-import { Facebook, Instagram, Twitter, YouTube, MailOutline, Phone } from '@mui/icons-material';
+import { Facebook, Instagram, Twitter, YouTube, MailOutline, Phone, Chat } from '@mui/icons-material';
 
 export default function Footer() {
   const [email, setEmail] = useState('');
@@ -68,6 +68,9 @@ export default function Footer() {
               </IconButton>
               <IconButton href="#" sx={{ color: primaryColor }}>
                 <YouTube />
+              </IconButton>
+              <IconButton href="/chat" sx={{ color: primaryColor }}>
+                <Chat />
               </IconButton>
             </Box>
           </Grid>
