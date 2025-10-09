@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
-import API from "../api";
+import axios from "axios";
 import {
   Box,
   Paper,
@@ -14,80 +14,93 @@ import {
   Typography,
   Divider,
   Stack,
+  IconButton,
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import DoneIcon from "@mui/icons-material/Done";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
+import CloseIcon from "@mui/icons-material/Close";
+import SendIcon from "@mui/icons-material/Send";
 
-// Socket.IO connection
-const socket = io("http://localhost:5000");
+const API = "http://localhost:5000"; // 🔧 Change for production
 
 const UserChat = () => {
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
   const [chat, setChat] = useState(null);
   const chatEndRef = useRef(null);
-
   const botTimer1 = useRef(null);
   const botTimer2 = useRef(null);
 
-  const scrollToBottom = () => chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  const token = localStorage.getItem("token"); // ✅ get token inside component
 
-  // Emit online status
-  useEffect(() => {
-    socket.emit("userStatus", { online: true });
-    return () => socket.emit("userStatus", { online: false });
-  }, []);
+  const socket = useRef(null);
 
-  // Fetch chat on mount
+  // Scroll to bottom
+  const scrollToBottom = () => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  // Fetch chat
   useEffect(() => {
+    if (!token) return; // not logged in
+
     const fetchChat = async () => {
       try {
-        const { data } = await API.get("/chat/me");
+        const { data } = await axios.get(`${API}/api/chat/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         setMessages(data.messages || []);
         setChat(data);
-        if (data._id) socket.emit("joinRoom", data._id);
+
+        // Initialize socket only after chat is fetched
+        socket.current = io(API, { auth: { token } });
+        if (data._id) socket.current.emit("joinRoom", data._id);
+
+        // Socket listeners
+        socket.current.on("receiveMessage", (msg) => {
+          if (!msg || msg.roomId !== data._id) return;
+          setMessages((prev) => [...prev, msg]);
+          if (msg.sender === "admin") clearBotTimers();
+        });
+
+        socket.current.on("chatClosed", ({ chatId }) => {
+          if (data._id === chatId) setChat((prev) => ({ ...prev, isClosed: true }));
+        });
+
+        socket.current.on("chatContinued", ({ chatId }) => {
+          if (data._id === chatId) setChat((prev) => ({ ...prev, isClosed: false }));
+        });
       } catch (err) {
         console.error("fetchChat error:", err.response?.data || err.message);
       }
     };
+
     fetchChat();
-  }, []);
 
-  // Listen for messages & chat events
-  useEffect(() => {
-    socket.on("receiveMessage", (msg) => {
-      if (!msg || !chat || msg.roomId !== chat._id) return;
-      setMessages((prev) => [...prev, msg]);
-      if (msg.sender === "admin") clearBotTimers();
-    });
-
-    socket.on("chatClosed", ({ chatId }) => {
-      if (chat && chat._id === chatId) setChat(prev => ({ ...prev, isClosed: true }));
-    });
-
-    socket.on("chatContinued", ({ chatId }) => {
-      if (chat && chat._id === chatId) setChat(prev => ({ ...prev, isClosed: false }));
-    });
-
+    // Cleanup on unmount
     return () => {
-      socket.off("receiveMessage");
-      socket.off("chatClosed");
-      socket.off("chatContinued");
+      if (socket.current) socket.current.disconnect();
     };
-  }, [chat]);
+  }, [token]);
 
   // Bot timers
   const clearBotTimers = () => {
-    if (botTimer1.current) clearTimeout(botTimer1.current);
-    if (botTimer2.current) clearTimeout(botTimer2.current);
+    botTimer1.current && clearTimeout(botTimer1.current);
+    botTimer2.current && clearTimeout(botTimer2.current);
   };
 
   const startBotTimers = () => {
     clearBotTimers();
-    botTimer1.current = setTimeout(() => sendBotReply("We are still working on your query, please wait..."), 2 * 60 * 1000);
-    botTimer2.current = setTimeout(() => sendBotReply("We are offline, we will contact you shortly"), 5 * 60 * 1000);
+    botTimer1.current = setTimeout(
+      () => sendBotReply("We are still working on your query, please wait..."),
+      2 * 60 * 1000
+    );
+    botTimer2.current = setTimeout(
+      () => sendBotReply("We are offline, we will contact you shortly"),
+      5 * 60 * 1000
+    );
   };
 
   const sendBotReply = (text) => {
@@ -100,18 +113,22 @@ const UserChat = () => {
       createdAt: new Date(),
       status: "delivered",
     };
-    setMessages(prev => [...prev, botMsg]);
-    socket.emit("sendMessage", { roomId: chat._id, message: botMsg });
+    setMessages((prev) => [...prev, botMsg]);
+    socket.current.emit("sendMessage", { roomId: chat._id, message: botMsg });
   };
 
   // Send user message
   const sendMessage = async () => {
-    if (!text.trim() || !chat || chat.isClosed) return;
+    if (!text.trim() || !chat || chat.isClosed || !token) return;
     try {
-      const { data } = await API.post("/chat/send", { text });
+      const { data } = await axios.post(
+        `${API}/api/chat/send`,
+        { text },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       const newMsg = data.messages[data.messages.length - 1];
       setMessages(data.messages);
-      socket.emit("sendMessage", { roomId: chat._id, message: newMsg });
+      socket.current.emit("sendMessage", { roomId: chat._id, message: newMsg });
       setText("");
       startBotTimers();
     } catch (err) {
@@ -121,17 +138,37 @@ const UserChat = () => {
 
   // Continue chat
   const continueChat = async () => {
-    if (!chat) return;
+    if (!chat || !token) return;
     try {
-      await API.post(`/chat/${chat._id}/continue`);
-      setChat(prev => ({ ...prev, isClosed: false }));
-      socket.emit("chatContinued", { chatId: chat._id });
+      await axios.post(
+        `${API}/api/chat/${chat._id}/continue`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setChat((prev) => ({ ...prev, isClosed: false }));
+      socket.current.emit("chatContinued", { chatId: chat._id });
     } catch (err) {
       console.error(err);
     }
   };
 
-  // Format date for messages
+  // Close chat
+  const closeChat = async () => {
+    if (!chat || !token) return;
+    try {
+      await axios.post(
+        `${API}/api/chat/${chat._id}/close`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setChat((prev) => ({ ...prev, isClosed: true }));
+      socket.current.emit("chatClosed", { chatId: chat._id });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Format date
   const formatDate = (dateStr) => {
     const msgDate = new Date(dateStr);
     const today = new Date();
@@ -146,16 +183,25 @@ const UserChat = () => {
 
   return (
     <Box sx={{ maxWidth: 650, mx: "auto", mt: 4, display: "flex", flexDirection: "column", gap: 2 }}>
-      <Typography variant="h5" align="center" sx={{ fontWeight: "bold", color: "#1976d2" }}>
-        💬 Customer Support
-      </Typography>
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Typography variant="h5" sx={{ fontWeight: "bold", color: "#1976d2" }}>
+          💬 Customer Support
+        </Typography>
+        {chat && !chat.isClosed && (
+          <IconButton color="error" onClick={closeChat} title="Close Chat">
+            <CloseIcon />
+          </IconButton>
+        )}
+      </Stack>
 
       {chat?.isClosed && (
         <Paper sx={{ p: 2, textAlign: "center", bgcolor: "#ffebee" }}>
           <Typography variant="body1" color="error" sx={{ mb: 1 }}>
             Chat ended by admin.
           </Typography>
-          <Button variant="contained" color="primary" onClick={continueChat}>Continue Chat</Button>
+          <Button variant="contained" color="primary" onClick={continueChat}>
+            Continue Chat
+          </Button>
         </Paper>
       )}
 
@@ -164,7 +210,6 @@ const UserChat = () => {
           {messages.map((msg, i) => {
             const prevMsg = messages[i - 1];
             const showDateDivider = !prevMsg || new Date(prevMsg.createdAt).toDateString() !== new Date(msg.createdAt).toDateString();
-
             return (
               <React.Fragment key={msg._id || i}>
                 {showDateDivider && (
@@ -172,7 +217,6 @@ const UserChat = () => {
                     <Typography variant="caption" color="textSecondary">{formatDate(msg.createdAt)}</Typography>
                   </Divider>
                 )}
-
                 <ListItem sx={{ justifyContent: msg.sender === "user" ? "flex-end" : "flex-start" }}>
                   {msg.sender !== "user" && (
                     <ListItemAvatar>
@@ -181,7 +225,6 @@ const UserChat = () => {
                       </Avatar>
                     </ListItemAvatar>
                   )}
-
                   <Paper sx={{ p: 1.5, bgcolor: msg.sender === "user" ? "#1976d2" : "#e0f7fa", color: msg.sender === "user" ? "white" : "black", maxWidth: "70%", borderRadius: 3 }}>
                     <ListItemText primary={msg.text} />
                     <Stack direction="row" justifyContent="space-between" alignItems="center" mt={0.5}>
@@ -194,7 +237,6 @@ const UserChat = () => {
                       )}
                     </Stack>
                   </Paper>
-
                   {msg.sender === "user" && (
                     <ListItemAvatar>
                       <Avatar sx={{ bgcolor: "#ff9800", width: 36, height: 36 }}>
@@ -216,12 +258,14 @@ const UserChat = () => {
           placeholder={chat?.isClosed ? "Chat ended by admin..." : "Type your message..."}
           variant="outlined"
           value={text}
-          onChange={e => setText(e.target.value)}
-          onKeyDown={e => { if (e.key === "Enter") sendMessage(); }}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
           disabled={chat?.isClosed}
           sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
         />
-        <Button variant="contained" color="primary" onClick={sendMessage} disabled={chat?.isClosed}>Send</Button>
+        <IconButton color="primary" onClick={sendMessage} disabled={chat?.isClosed}>
+          <SendIcon />
+        </IconButton>
       </Paper>
     </Box>
   );

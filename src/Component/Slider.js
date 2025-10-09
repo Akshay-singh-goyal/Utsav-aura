@@ -4,20 +4,22 @@ import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
-
+import img1 from "./Images/dg.jpg"
+import img2 from "./Images/diwali.jpg"
 function Slider() {
-  const slides = [
-    {
-      url: "/Image/banner1.jpg",
-      cta: "Learn by Image One",
-      link: "/shop",
-    },
-    {
-      url: "/Image/banner2.jpg",
-      cta: "Explore Image Two",
-      link: "/shop",
-    },
-  ];
+ const slides = [
+  {
+    url: img1,
+    cta: "Learn by Image One",
+    link: "/shop",
+  },
+  {
+    url: img2,
+    cta: "Explore Image Two",
+    link: "/shop",
+  },
+];
+
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigate = useNavigate();
