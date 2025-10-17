@@ -1,5 +1,7 @@
 // src/Pages/Home.jsx
 import React, { useEffect, useRef, useState } from "react";
+import Loader from "../Component/Loader";
+
 import {
   Box,
   Typography,
@@ -46,6 +48,8 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [helpOpen, setHelpOpen] = useState(false); // Help dialog state
+  const [loading, setLoading] = useState(true);
+
   const navigate = useNavigate();
 
   const ganeshNames = [
@@ -81,6 +85,13 @@ export default function Home() {
       console.error(err);
     }
   };
+  useEffect(() => {
+  const timer = setTimeout(() => {
+    setLoading(false);
+  }, 2000); // 2 seconds loader
+  return () => clearTimeout(timer);
+}, []);
+
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") handleSearch();
@@ -174,8 +185,9 @@ export default function Home() {
 
       {/* ✅ Main Content */}
       <Slider />
-
-      <Container maxWidth="xl" sx={{ mt: 6 }}>
+      if (loading) {
+  return <Loader />;
+}     <Container maxWidth="xl" sx={{ mt: 6 }}>
         {/* Category Section */}
         <Typography variant="h5" fontWeight="bold" mb={3} sx={{ color: "#b45309" }}>
           Shop by Category
