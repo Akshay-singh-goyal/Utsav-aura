@@ -9,8 +9,6 @@ import {
   Typography,
   Paper,
   InputAdornment,
-  IconButton,
-  Modal,
 } from "@mui/material";
 import { AccountCircle, Lock } from "@mui/icons-material";
 import { toast, ToastContainer } from "react-toastify";
@@ -18,8 +16,6 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function Login({ setIsAuthenticated, setUser }) {
   const [form, setForm] = useState({ email: "", password: "" });
-  const [forgotEmail, setForgotEmail] = useState("");
-  const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,7 +26,8 @@ export default function Login({ setIsAuthenticated, setUser }) {
     }
   }, [navigate]);
 
-  const onChange = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+  const onChange = (e) =>
+    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -40,11 +37,14 @@ export default function Login({ setIsAuthenticated, setUser }) {
     }
 
     try {
-      const res = await fetch("https://utsav-aura-backend-7.onrender.com/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+      const res = await fetch(
+        "https://utsav-aura-backend-7.onrender.com/auth/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        }
+      );
       const data = await res.json();
 
       if (data.success) {
@@ -68,43 +68,6 @@ export default function Login({ setIsAuthenticated, setUser }) {
     }
   };
 
-  // -------------------- Forgot Password --------------------
-  const handleForgotPassword = async () => {
-    if (!forgotEmail) return toast.warning("Please enter your email!");
-    try {
-      const res = await fetch(
-        "https://utsav-aura-backend-7.onrender.com/auth/forgot-password",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: forgotEmail }),
-        }
-      );
-      const data = await res.json();
-      if (data.success) {
-        toast.success("Password reset link sent! Check your email.");
-        setOpenModal(false);
-        setForgotEmail("");
-      } else {
-        toast.error(data.message || "Failed to send reset link.");
-      }
-    } catch (err) {
-      toast.error("Server error: " + err.message);
-    }
-  };
-
-  const modalStyle = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: { xs: "90%", sm: 400 },
-    bgcolor: "#fff",
-    borderRadius: 3,
-    p: 4,
-    boxShadow: 5,
-  };
-
   return (
     <Box
       sx={{
@@ -118,7 +81,14 @@ export default function Login({ setIsAuthenticated, setUser }) {
     >
       <ToastContainer position="top-right" autoClose={2000} />
       <Container maxWidth="sm">
-        <Paper elevation={10} sx={{ p: { xs: 3, sm: 5 }, borderRadius: 3, bgcolor: "#fff8e1" }}>
+        <Paper
+          elevation={10}
+          sx={{
+            p: { xs: 3, sm: 5 },
+            borderRadius: 3,
+            bgcolor: "#fff8e1",
+          }}
+        >
           <Typography
             variant="h4"
             align="center"
@@ -128,7 +98,11 @@ export default function Login({ setIsAuthenticated, setUser }) {
             Welcome Back!
           </Typography>
 
-          <Box component="form" onSubmit={handleLogin} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <Box
+            component="form"
+            onSubmit={handleLogin}
+            sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+          >
             <TextField
               fullWidth
               label="Email"
@@ -144,6 +118,7 @@ export default function Login({ setIsAuthenticated, setUser }) {
                 ),
               }}
             />
+
             <TextField
               fullWidth
               label="Password"
@@ -169,16 +144,19 @@ export default function Login({ setIsAuthenticated, setUser }) {
                 fontWeight: "bold",
                 background: "linear-gradient(to right, #facc15, #fb923c)",
                 color: "#1e293b",
-                "&:hover": { background: "linear-gradient(to right, #fbbf24, #f59e0b)" },
+                "&:hover": {
+                  background: "linear-gradient(to right, #fbbf24, #f59e0b)",
+                },
               }}
             >
               Login
             </Button>
 
+            {/* Forgot Password Link */}
             <Button
               variant="text"
-              sx={{ textTransform: "none", color: "#f59e0b", mt: 1 }}
-              onClick={() => setOpenModal(true)}
+              sx={{ mt: 1, textTransform: "none", color: "#f59e0b" }}
+              onClick={() => navigate("/forgot-password")}
             >
               Forgot Password?
             </Button>
@@ -186,37 +164,15 @@ export default function Login({ setIsAuthenticated, setUser }) {
 
           <Typography variant="body2" align="center" sx={{ mt: 3 }}>
             Don&apos;t have an account?{" "}
-            <Link to="/signup" style={{ color: "#fbbf24", fontWeight: 500, textDecoration: "none" }}>
+            <Link
+              to="/signup"
+              style={{ color: "#fbbf24", fontWeight: 500, textDecoration: "none" }}
+            >
               Signup here
             </Link>
           </Typography>
         </Paper>
       </Container>
-
-      {/* -------------------- Forgot Password Modal -------------------- */}
-      <Modal open={openModal} onClose={() => setOpenModal(false)}>
-        <Box sx={modalStyle}>
-          <Typography variant="h6" gutterBottom sx={{ color: "#f59e0b" }}>
-            Reset Password
-          </Typography>
-          <TextField
-            fullWidth
-            label="Enter your email"
-            type="email"
-            value={forgotEmail}
-            onChange={(e) => setForgotEmail(e.target.value)}
-            sx={{ mb: 2 }}
-          />
-          <Button
-            variant="contained"
-            fullWidth
-            sx={{ bgcolor: "#f59e0b" }}
-            onClick={handleForgotPassword}
-          >
-            Send Reset Link
-          </Button>
-        </Box>
-      </Modal>
     </Box>
   );
 }
