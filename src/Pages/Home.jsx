@@ -9,9 +9,17 @@ import {
   TextField,
   IconButton,
   useMediaQuery,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Fab,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
+import CloseIcon from "@mui/icons-material/Close";
+import SmartToyIcon from "@mui/icons-material/SmartToy";
 import { useNavigate } from "react-router-dom";
 import Slider from "../Component/Slider";
 import LiveDarshan from "../Component/Livedareshan";
@@ -34,6 +42,7 @@ export default function Home() {
   const [user, setUser] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [openHelpDialog, setOpenHelpDialog] = useState(false); // 🆕 for help dialog
   const navigate = useNavigate();
 
   const ganeshNames = [
@@ -288,49 +297,88 @@ export default function Home() {
             Why Choose Us?
           </Typography>
           <Grid container spacing={4} justifyContent="center">
-            {[
-              {
-                title: "Easy Booking",
-                desc: "Book events and services in just a few clicks.",
-              },
-              {
-                title: "Best Prices",
-                desc: "Get competitive rates and exclusive discounts.",
-              },
-              {
-                title: "24/7 Support",
-                desc: "We’re here to help anytime you need us.",
-              },
-            ].map((item) => (
-              <Grid item xs={12} md={4} key={item.title}>
-                <Paper
-                  elevation={6}
-                  sx={{
-                    p: 4,
-                    borderRadius: 3,
-                    textAlign: "center",
-                    bgcolor: "white",
-                    transition: "0.3s",
-                    "&:hover": {
-                      transform: "translateY(-5px)",
-                      boxShadow: 8,
-                    },
-                  }}
-                >
-                  <Typography
-                    variant="h6"
-                    mb={2}
-                    sx={{ color: "#ef4444", fontWeight: "bold" }}
+            {[{ title: "Easy Booking", desc: "Book events and services in just a few clicks." },
+              { title: "Best Prices", desc: "Get competitive rates and exclusive discounts." },
+              { title: "24/7 Support", desc: "We’re here to help anytime you need us." }]
+              .map((item) => (
+                <Grid item xs={12} md={4} key={item.title}>
+                  <Paper
+                    elevation={6}
+                    sx={{
+                      p: 4,
+                      borderRadius: 3,
+                      textAlign: "center",
+                      bgcolor: "white",
+                      transition: "0.3s",
+                      "&:hover": {
+                        transform: "translateY(-5px)",
+                        boxShadow: 8,
+                      },
+                    }}
                   >
-                    {item.title}
-                  </Typography>
-                  <Typography sx={{ color: "#374151" }}>{item.desc}</Typography>
-                </Paper>
-              </Grid>
-            ))}
+                    <Typography
+                      variant="h6"
+                      mb={2}
+                      sx={{ color: "#ef4444", fontWeight: "bold" }}
+                    >
+                      {item.title}
+                    </Typography>
+                    <Typography sx={{ color: "#374151" }}>
+                      {item.desc}
+                    </Typography>
+                  </Paper>
+                </Grid>
+              ))}
           </Grid>
         </Box>
       </Container>
+
+      {/* 🤖 Floating Help Button */}
+      <Fab
+        color="primary"
+        aria-label="help"
+        sx={{
+          position: "fixed",
+          bottom: 24,
+          right: 24,
+          zIndex: 20,
+          boxShadow: 5,
+        }}
+        onClick={() => setOpenHelpDialog(true)}
+      >
+        <SmartToyIcon />
+      </Fab>
+
+      {/* 🪄 Help Dialog */}
+      <Dialog
+        open={openHelpDialog}
+        onClose={() => setOpenHelpDialog(false)}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          Get Help
+          <IconButton onClick={() => setOpenHelpDialog(false)}>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
+          <Typography variant="body1" sx={{ mb: 2 }}>
+            👋 Hello! How can we help you today?
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            • You can search products from the search bar above. <br />
+            • Browse categories like Murti, Events, and Decorations. <br />
+            • For urgent support, contact our 24/7 support team. <br />
+            • Live sessions are available in the Live Darshan section.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenHelpDialog(false)} variant="contained" color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
