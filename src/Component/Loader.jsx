@@ -1,7 +1,7 @@
 // src/Component/Loader.jsx
 import React from "react";
 import { Box, CircularProgress, Typography } from "@mui/material";
-import Logo from "../assets/logo.png"; // Make sure you have your logo image here
+import utsavLogo from "./Images/utsavlogo.png";
 
 const Loader = () => {
   return (
@@ -13,7 +13,7 @@ const Loader = () => {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        backgroundImage: `url(${Logo})`,
+        backgroundImage: `url(${utsavLogo})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
