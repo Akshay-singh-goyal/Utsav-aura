@@ -1,3 +1,4 @@
+// src/Pages/Home.jsx
 import React, { useEffect, useRef, useState } from "react";
 import {
   AppBar,
@@ -16,7 +17,6 @@ import {
   Slide,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import Slider from "react-slick";
 import { FaTruckMoving, FaBroom, FaCheckCircle, FaCalendarAlt } from "react-icons/fa";
 import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
@@ -26,7 +26,7 @@ import LiveHistory from "./LiveHistory";
 import DecorationGallery from "../Component/DecorationGallery";
 import { getLoggedInUser } from "../utils/auth";
 
-// Placeholder imports (if these components exist in your project)
+// Your Slider component
 import Slider from "../Component/Slider";
 import ProductGallery from "../Component/ProductGallery";
 
@@ -134,18 +134,20 @@ export default function Home() {
       </AppBar>
 
       {/* Hero Section */}
-      <Box sx={{
-        minHeight: "80vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
-        backgroundImage: "url('/images/hero-bg.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        color: "#fff",
-        px: 2
-      }}>
+      <Box
+        sx={{
+          minHeight: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          textAlign: "center",
+          backgroundImage: "url('/images/hero-bg.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          color: "#fff",
+          px: 2,
+        }}
+      >
         <Box>
           <Typography variant={isMobile ? "h4" : "h2"} fontWeight="bold" mb={2}>
             Stress-Free Moving & Sparkling Clean Homes
@@ -170,20 +172,22 @@ export default function Home() {
       </Container>
 
       {/* Search Bar */}
-      <Box sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        py: isMobile ? 2 : 3,
-        px: 2,
-        bgcolor: "#fff3e0",
-        borderBottom: "2px solid #f59e0b",
-        position: "sticky",
-        top: 0,
-        zIndex: 10,
-        borderRadius: 2,
-        boxShadow: "0 4px 15px rgba(0,0,0,0.2)"
-      }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          py: isMobile ? 2 : 3,
+          px: 2,
+          bgcolor: "#fff3e0",
+          borderBottom: "2px solid #f59e0b",
+          position: "sticky",
+          top: 0,
+          zIndex: 10,
+          borderRadius: 2,
+          boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
+        }}
+      >
         <TextField
           variant="filled"
           placeholder="Search for Murti, Event, Decorations..."
@@ -195,7 +199,7 @@ export default function Home() {
             width: isMobile ? "85%" : "40%",
             bgcolor: "#fff8e1",
             borderRadius: 2,
-            "& .MuiFilledInput-root": { borderRadius: 2 }
+            "& .MuiFilledInput-root": { borderRadius: 2 },
           }}
         />
         <IconButton color="secondary" sx={{ ml: 1 }} onClick={handleSearch}>
@@ -219,7 +223,7 @@ export default function Home() {
                     overflow: "hidden",
                     cursor: "pointer",
                     transition: "0.3s",
-                    "&:hover": { transform: "scale(1.05)", boxShadow: "0 8px 20px rgba(0,0,0,0.3)" }
+                    "&:hover": { transform: "scale(1.05)", boxShadow: "0 8px 20px rgba(0,0,0,0.3)" },
                   }}
                   onClick={() => navigate(`/${item.type.toLowerCase()}/${item._id}`)}
                 >
@@ -240,7 +244,7 @@ export default function Home() {
         </Container>
       )}
 
-      {/* Main Slider */}
+      {/* Slider Component */}
       <Slider />
 
       {/* Services */}
@@ -260,7 +264,7 @@ export default function Home() {
         </Slider>
       </Container>
 
-      {/* Categories Carousel */}
+      {/* Categories */}
       <Container maxWidth="xl" sx={{ mt: 6 }}>
         <Typography variant="h4" fontWeight="bold" mb={3} sx={{ color: "#f59e0b", textAlign: "center", letterSpacing: 1 }}>
           Shop by Category
