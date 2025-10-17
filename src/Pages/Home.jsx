@@ -1,4 +1,3 @@
-// src/pages/Home.jsx
 import React, { useEffect, useRef, useState } from "react";
 import {
   AppBar,
@@ -27,7 +26,7 @@ import LiveHistory from "./LiveHistory";
 import DecorationGallery from "../Component/DecorationGallery";
 import { getLoggedInUser } from "../utils/auth";
 
-// Import your sliders / galleries (placeholders if not existing)
+// Placeholder imports (if these components exist in your project)
 import MainSlider from "../Component/MainSlider";
 import ProductGallery from "../Component/ProductGallery";
 
@@ -61,7 +60,7 @@ const advantages = [
   { title: "Flexible Scheduling", desc: "Book services anytime, anywhere.", icon: FaBroom },
 ];
 
-// Slider settings for services and testimonials
+// Slider settings
 const sliderSettings = {
   dots: true,
   infinite: true,
@@ -80,25 +79,21 @@ export default function Home() {
   const navigate = useNavigate();
   const audioRef = useRef(null);
 
-  // State
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
-  // Loader
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 2000);
     return () => clearTimeout(timer);
   }, []);
 
-  // Get logged-in user
   useEffect(() => {
     const loggedInUser = getLoggedInUser();
     if (loggedInUser) setUser(loggedInUser);
   }, []);
 
-  // Search functionality
   const handleSearch = async () => {
     if (!searchQuery) return setSearchResults([]);
     try {
@@ -114,17 +109,12 @@ export default function Home() {
 
   if (loading) return <Loader />;
 
-  // Categories Data
   const categories = [
     { title: "Murti & Idols", img: murtiidol },
     { title: "Decorations", img: decoration },
     { title: "Event Booking", img: event },
     { title: "Garba Dresses", img: garbadress },
   ];
-
-  // Helper to generate category route
-  const getCategoryRoute = (title) =>
-    `/category/${title.toLowerCase().replace(/ & /g, "-").replace(/\s+/g, "-")}`;
 
   return (
     <Box sx={{ bgcolor: "#f3f4f6", minHeight: "100vh", fontFamily: "'Mukta', sans-serif" }}>
@@ -144,20 +134,18 @@ export default function Home() {
       </AppBar>
 
       {/* Hero Section */}
-      <Box
-        sx={{
-          minHeight: "80vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
-          backgroundImage: "url('/images/hero-bg.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          color: "#fff",
-          px: 2,
-        }}
-      >
+      <Box sx={{
+        minHeight: "80vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        backgroundImage: "url('/images/hero-bg.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        color: "#fff",
+        px: 2
+      }}>
         <Box>
           <Typography variant={isMobile ? "h4" : "h2"} fontWeight="bold" mb={2}>
             Stress-Free Moving & Sparkling Clean Homes
@@ -182,22 +170,20 @@ export default function Home() {
       </Container>
 
       {/* Search Bar */}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          py: isMobile ? 2 : 3,
-          px: 2,
-          bgcolor: "#fff3e0",
-          borderBottom: "2px solid #f59e0b",
-          position: "sticky",
-          top: 0,
-          zIndex: 10,
-          borderRadius: 2,
-          boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
-        }}
-      >
+      <Box sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        py: isMobile ? 2 : 3,
+        px: 2,
+        bgcolor: "#fff3e0",
+        borderBottom: "2px solid #f59e0b",
+        position: "sticky",
+        top: 0,
+        zIndex: 10,
+        borderRadius: 2,
+        boxShadow: "0 4px 15px rgba(0,0,0,0.2)"
+      }}>
         <TextField
           variant="filled"
           placeholder="Search for Murti, Event, Decorations..."
@@ -209,7 +195,7 @@ export default function Home() {
             width: isMobile ? "85%" : "40%",
             bgcolor: "#fff8e1",
             borderRadius: 2,
-            "& .MuiFilledInput-root": { borderRadius: 2 },
+            "& .MuiFilledInput-root": { borderRadius: 2 }
           }}
         />
         <IconButton color="secondary" sx={{ ml: 1 }} onClick={handleSearch}>
@@ -233,7 +219,7 @@ export default function Home() {
                     overflow: "hidden",
                     cursor: "pointer",
                     transition: "0.3s",
-                    "&:hover": { transform: "scale(1.05)", boxShadow: "0 8px 20px rgba(0,0,0,0.3)" },
+                    "&:hover": { transform: "scale(1.05)", boxShadow: "0 8px 20px rgba(0,0,0,0.3)" }
                   }}
                   onClick={() => navigate(`/${item.type.toLowerCase()}/${item._id}`)}
                 >
@@ -264,21 +250,8 @@ export default function Home() {
         </Typography>
         <Slider {...sliderSettings}>
           {services.map((service) => (
-            <Paper
-              key={service.title}
-              sx={{
-                p: 2,
-                borderRadius: 3,
-                textAlign: "center",
-                mx: 1,
-                '&:hover': { transform: 'scale(1.05)', boxShadow: 6 },
-              }}
-            >
-              <img
-                src={service.img}
-                alt={service.title}
-                style={{ width: "100%", borderRadius: 12, height: 180, objectFit: "cover" }}
-              />
+            <Paper key={service.title} sx={{ p: 2, borderRadius: 3, textAlign: "center", mx: 1, '&:hover': { transform: 'scale(1.05)', boxShadow: 6 } }}>
+              <img src={service.img} alt={service.title} style={{ width: "100%", borderRadius: 12, height: 180, objectFit: "cover" }} />
               <Typography variant="h6" mt={2}>{service.title}</Typography>
               <Typography variant="body2">{service.desc}</Typography>
               <Button variant="contained" color="primary" sx={{ mt: 2 }}>Book Now</Button>
@@ -289,54 +262,14 @@ export default function Home() {
 
       {/* Categories Carousel */}
       <Container maxWidth="xl" sx={{ mt: 6 }}>
-        <Typography
-          variant="h4"
-          fontWeight="bold"
-          mb={3}
-          sx={{ color: "#f59e0b", textAlign: "center", letterSpacing: 1 }}
-        >
+        <Typography variant="h4" fontWeight="bold" mb={3} sx={{ color: "#f59e0b", textAlign: "center", letterSpacing: 1 }}>
           Shop by Category
         </Typography>
-
-        <Box
-          sx={{
-            display: "flex",
-            overflowX: "auto",
-            py: 2,
-            px: 1,
-            gap: 3,
-            "&::-webkit-scrollbar": { display: "none" },
-            scrollbarWidth: "none",
-          }}
-        >
+        <Box sx={{ display: "flex", overflowX: "auto", py: 2, px: 1, gap: 3, "&::-webkit-scrollbar": { display: "none" }, scrollbarWidth: "none" }}>
           {categories.map((cat) => (
-            <Box
-              key={cat.title}
-              sx={{
-                flex: "0 0 auto",
-                textAlign: "center",
-                cursor: "pointer",
-              }}
-              onClick={() => navigate(getCategoryRoute(cat.title))}
-            >
-              <Box
-                component="img"
-                src={cat.img}
-                alt={cat.title}
-                sx={{
-                  width: 100,
-                  height: 100,
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                  mb: 1,
-                  border: "3px solid #f59e0b",
-                  transition: "0.3s",
-                  "&:hover": { transform: "scale(1.1)" },
-                }}
-              />
-              <Typography variant="subtitle2" fontWeight="bold" sx={{ color: "#b45309" }}>
-                {cat.title}
-              </Typography>
+            <Box key={cat.title} sx={{ flex: "0 0 auto", textAlign: "center", cursor: "pointer" }} onClick={() => navigate(`/all`)}>
+              <Box component="img" src={cat.img} alt={cat.title} sx={{ width: 100, height: 100, borderRadius: "50%", objectFit: "cover", mb: 1, border: "3px solid #f59e0b", transition: "0.3s", "&:hover": { transform: "scale(1.1)" } }} />
+              <Typography variant="subtitle2" fontWeight="bold" sx={{ color: "#b45309" }}>{cat.title}</Typography>
             </Box>
           ))}
         </Box>
@@ -385,14 +318,7 @@ export default function Home() {
         <Grid container spacing={4} justifyContent="center">
           {advantages.map((adv) => (
             <Grid item xs={12} md={3} key={adv.title}>
-              <Paper
-                sx={{
-                  p: 4,
-                  borderRadius: 3,
-                  textAlign: "center",
-                  '&:hover': { transform: "translateY(-5px)", boxShadow: 6 },
-                }}
-              >
+              <Paper sx={{ p: 4, borderRadius: 3, textAlign: "center", '&:hover': { transform: "translateY(-5px)", boxShadow: 6 } }}>
                 {React.createElement(adv.icon, { style: { fontSize: 40, color: "#FF9900", marginBottom: 16 } })}
                 <Typography variant="h6" mb={1}>{adv.title}</Typography>
                 <Typography variant="body2">{adv.desc}</Typography>
