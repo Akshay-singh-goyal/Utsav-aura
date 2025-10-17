@@ -1,17 +1,44 @@
 import React from "react";
-import "./Loader.css";
-import { CircularProgress, Typography } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 
 const Loader = () => {
   return (
-    <div className="loader-container">
-      <div className="loader-box">
+    <Box
+      sx={{
+        height: "100vh",
+        width: "100vw",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        background: "linear-gradient(135deg, #ff9900, #ff6f00)", // warm gradient background
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          backgroundColor: "rgba(255, 255, 255, 0.1)", // subtle transparent box
+          padding: "40px",
+          borderRadius: "20px",
+          boxShadow: "0 8px 30px rgba(0, 0, 0, 0.2)",
+          backdropFilter: "blur(10px)",
+        }}
+      >
         <CircularProgress size={70} thickness={5} color="primary" />
-        <Typography className="loader-text">
-         Welcome to ustav-aura Loading, please wait...
+        <Typography
+          sx={{
+            color: "#fff",
+            fontWeight: "bold",
+            marginTop: "20px",
+            textAlign: "center",
+            fontSize: "1.2rem",
+          }}
+        >
+          Welcome to Ustav-Aura. Loading, please wait...
         </Typography>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
