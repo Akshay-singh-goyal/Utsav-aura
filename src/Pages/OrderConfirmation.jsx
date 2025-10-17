@@ -41,7 +41,7 @@ const getItemTotal = (item) => {
     item.mode === "Rent"
       ? Number(item.priceRent ?? item.price ?? item.discountPrice)
       : Number(item.priceBuy ?? item.price ?? item.discountPrice);
-  const quantity = Number(item.quantity ?? 1);  
+  const quantity = Number(item.quantity ?? 1);
   const rentalDays = item.mode === "Rent" ? Number(item.rentalDays ?? 1) : 1;
   return unitPrice * quantity * rentalDays;
 };
@@ -60,20 +60,14 @@ const downloadInvoice = (order) => {
   doc.text(`Order ID: ${order.orderId || order._id || "N/A"}`, 14, y);
   y += 7;
   doc.text(
-    `Customer: ${order.shipping?.firstName || ""} ${
-      order.shipping?.lastName || ""
-    }`,
+    `Customer: ${order.shipping?.firstName || ""} ${order.shipping?.lastName || ""}`,
     14,
     y
   );
   y += 7;
   doc.text(`Email: ${order.shipping?.email || "N/A"}`, 14, y);
   y += 7;
-  doc.text(
-    `Date: ${new Date(order.createdAt || Date.now()).toLocaleDateString()}`,
-    14,
-    y
-  );
+  doc.text(`Date: ${new Date(order.createdAt || Date.now()).toLocaleDateString()}`, 14, y);
   y += 10;
 
   doc.setFontSize(14);
@@ -81,9 +75,7 @@ const downloadInvoice = (order) => {
   y += 8;
 
   order.items?.forEach((item, idx) => {
-    const line = `${idx + 1}. ${item.name || "Unnamed Product"} (${
-      item.mode || "Buy"
-    }) × ${item.quantity || 1} ${
+    const line = `${idx + 1}. ${item.name || "Unnamed Product"} (${item.mode || "Buy"}) × ${item.quantity || 1} ${
       item.mode === "Rent" ? `[${item.rentalDays} days]` : ""
     } = ${inr(getItemTotal(item))}`;
     doc.text(line, 14, y);
@@ -173,7 +165,7 @@ export default function OrderConfirmation() {
   const items = order.items || [];
   const shipping = order.shipping || {};
   const subtotal = items.reduce((sum, item) => sum + getItemTotal(item), 0);
-  const delivery = subTotal > 999 ? 75 : 90 ;
+  const delivery = subtotal > 999 ? 75 : 90;
   const grandTotal = subtotal + delivery;
 
   return (
