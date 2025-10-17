@@ -1,5 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Container, Typography, Table, TableHead, TableRow, TableCell, TableBody, Button, Select, MenuItem } from "@mui/material";
+import {
+  Container,
+  Typography,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Select,
+  MenuItem,
+  Paper,
+  Box,
+} from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -8,7 +20,9 @@ export default function AdminQueries() {
 
   const fetchQueries = async () => {
     try {
-      const { data } = await axios.get("https://utsav-aura-backend-7.onrender.com/api/queries/all");
+      const { data } = await axios.get(
+        "https://utsav-aura-backend-7.onrender.com/api/queries/all"
+      );
       setQueries(data);
     } catch (err) {
       console.error(err);
@@ -18,7 +32,10 @@ export default function AdminQueries() {
 
   const handleStatusChange = async (id, status) => {
     try {
-      await axios.patch(`https://utsav-aura-backend-7.onrender.com/api/queries/status/${id}`, { status });
+      await axios.patch(
+        `https://utsav-aura-backend-7.onrender.com/api/queries/status/${id}`,
+        { status }
+      );
       toast.success("Status updated");
       fetchQueries();
     } catch (err) {
@@ -27,40 +44,67 @@ export default function AdminQueries() {
     }
   };
 
-  useEffect(() => { fetchQueries(); }, []);
+  useEffect(() => {
+    fetchQueries();
+  }, []);
 
   return (
     <Container sx={{ py: 5 }}>
-      <Typography variant="h4" mb={3}>Customer Queries</Typography>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Email</TableCell>
-            <TableCell>Subject</TableCell>
-            <TableCell>Message</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell>Action</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {queries.map(q => (
-            <TableRow key={q._id}>
-              <TableCell>{q.name}</TableCell>
-              <TableCell>{q.email}</TableCell>
-              <TableCell>{q.subject}</TableCell>
-              <TableCell>{q.message}</TableCell>
-              <TableCell>{q.status}</TableCell>
-              <TableCell>
-                <Select value={q.status} onChange={(e) => handleStatusChange(q._id, e.target.value)}>
-                  <MenuItem value="Pending">Pending</MenuItem>
-                  <MenuItem value="Resolved">Resolved</MenuItem>
-                </Select>
-              </TableCell>
+      <Typography
+        variant="h4"
+        mb={3}
+        sx={{ color: "#fff", fontWeight: "bold", textAlign: "center" }}
+      >
+        Customer Queries
+      </Typography>
+
+      <Paper
+        sx={{
+          width: "100%",
+          overflowX: "auto",
+          backgroundColor: "#1e1e2f",
+          borderRadius: 2,
+        }}
+      >
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Name</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Email</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Subject</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Message</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Status</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Action</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {queries.map((q) => (
+              <TableRow key={q._id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                <TableCell sx={{ color: "#fff" }}>{q.name}</TableCell>
+                <TableCell sx={{ color: "#fff" }}>{q.email}</TableCell>
+                <TableCell sx={{ color: "#fff" }}>{q.subject}</TableCell>
+                <TableCell sx={{ color: "#fff" }}>{q.message}</TableCell>
+                <TableCell sx={{ color: "#fff" }}>{q.status}</TableCell>
+                <TableCell>
+                  <Select
+                    value={q.status}
+                    onChange={(e) => handleStatusChange(q._id, e.target.value)}
+                    sx={{
+                      backgroundColor: "#2c2c3e",
+                      color: "#fff",
+                      borderRadius: 1,
+                      "& .MuiSvgIcon-root": { color: "#fff" },
+                    }}
+                  >
+                    <MenuItem value="Pending">Pending</MenuItem>
+                    <MenuItem value="Resolved">Resolved</MenuItem>
+                  </Select>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Paper>
     </Container>
   );
 }
