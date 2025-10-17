@@ -1,3 +1,4 @@
+// src/pages/AdminPanel.jsx
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -58,7 +59,15 @@ export default function AdminPanel() {
   const [openModal, setOpenModal] = useState(false);
   const [showAdvancedColor, setShowAdvancedColor] = useState(false);
 
-  const categories = ["Decoration", "Idols", "Clothes", "Accessories"];
+  const categories = [
+    "All",
+    "Decorations & Home Essentials",
+    "Gifts & Hampers",
+    "Clothing & Accessories",
+    "Food & Beverages",
+    "Spiritual & Religious Items",
+    "Toys & Kids’ Products",
+  ];
 
   // -------------------- Fetch Data --------------------
   useEffect(() => {
@@ -188,7 +197,6 @@ export default function AdminPanel() {
         toast.success("Product added successfully!");
       }
 
-      // Reset form
       setProductForm({
         name: "",
         originalPrice: "",
@@ -282,22 +290,14 @@ export default function AdminPanel() {
       {tab === 0 && (
         <Paper elevation={3} sx={{ p: 2, mb: 4, bgcolor: "#f5f5f5" }}>
           {decorationItems.map((item, idx) => (
-            <Grid
-              container
-              spacing={1}
-              key={idx}
-              alignItems="center"
-              sx={{ mb: 1 }}
-            >
+            <Grid container spacing={1} key={idx} alignItems="center" sx={{ mb: 1 }}>
               <Grid item xs={12} sm={6} md={2}>
                 <TextField
                   label="Name"
                   fullWidth
                   size="small"
                   value={item.name}
-                  onChange={(e) =>
-                    handleDecorationChange(idx, "name", e.target.value)
-                  }
+                  onChange={(e) => handleDecorationChange(idx, "name", e.target.value)}
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={3}>
@@ -306,9 +306,7 @@ export default function AdminPanel() {
                   fullWidth
                   size="small"
                   value={item.description}
-                  onChange={(e) =>
-                    handleDecorationChange(idx, "description", e.target.value)
-                  }
+                  onChange={(e) => handleDecorationChange(idx, "description", e.target.value)}
                 />
               </Grid>
               <Grid item xs={6} sm={3} md={2}>
@@ -318,9 +316,7 @@ export default function AdminPanel() {
                   fullWidth
                   size="small"
                   value={item.priceBuy}
-                  onChange={(e) =>
-                    handleDecorationChange(idx, "priceBuy", e.target.value)
-                  }
+                  onChange={(e) => handleDecorationChange(idx, "priceBuy", e.target.value)}
                 />
               </Grid>
               <Grid item xs={6} sm={3} md={2}>
@@ -330,9 +326,7 @@ export default function AdminPanel() {
                   fullWidth
                   size="small"
                   value={item.priceRent}
-                  onChange={(e) =>
-                    handleDecorationChange(idx, "priceRent", e.target.value)
-                  }
+                  onChange={(e) => handleDecorationChange(idx, "priceRent", e.target.value)}
                 />
               </Grid>
               <Grid item xs={6} sm={3} md={2}>
@@ -347,18 +341,13 @@ export default function AdminPanel() {
                   <input
                     type="file"
                     hidden
-                    onChange={(e) =>
-                      handleDecorationChange(idx, "image", e.target.files[0])
-                    }
+                    onChange={(e) => handleDecorationChange(idx, "image", e.target.files[0])}
                   />
                 </Button>
               </Grid>
               <Grid item xs={6} sm={3} md={1}>
                 {decorationItems.length > 1 && (
-                  <IconButton
-                    color="error"
-                    onClick={() => removeDecorationField(idx)}
-                  >
+                  <IconButton color="error" onClick={() => removeDecorationField(idx)}>
                     <Delete />
                   </IconButton>
                 )}
@@ -370,11 +359,7 @@ export default function AdminPanel() {
             <Button startIcon={<Add />} variant="outlined" onClick={addDecorationField}>
               Add Field
             </Button>
-            <Button
-              variant="contained"
-              onClick={submitDecorations}
-              sx={{ bgcolor: "#0f79af" }}
-            >
+            <Button variant="contained" onClick={submitDecorations} sx={{ bgcolor: "#0f79af" }}>
               Submit All
             </Button>
           </Stack>
@@ -450,7 +435,6 @@ export default function AdminPanel() {
             {editId ? "Edit Product" : "Add Product"}
           </Typography>
           <form onSubmit={handleProductSubmit}>
-            {/* Name, Price, Description */}
             <TextField
               fullWidth
               label="Name"
@@ -465,7 +449,9 @@ export default function AdminPanel() {
               type="number"
               size="small"
               value={productForm.originalPrice}
-              onChange={(e) => setProductForm({ ...productForm, originalPrice: e.target.value })}
+              onChange={(e) =>
+                setProductForm({ ...productForm, originalPrice: e.target.value })
+              }
               sx={{ mb: 2 }}
             />
             <TextField
@@ -474,7 +460,9 @@ export default function AdminPanel() {
               type="number"
               size="small"
               value={productForm.discountPrice}
-              onChange={(e) => setProductForm({ ...productForm, discountPrice: e.target.value })}
+              onChange={(e) =>
+                setProductForm({ ...productForm, discountPrice: e.target.value })
+              }
               sx={{ mb: 2 }}
             />
             <TextField
