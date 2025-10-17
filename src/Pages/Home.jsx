@@ -27,6 +27,10 @@ import LiveHistory from "./LiveHistory";
 import DecorationGallery from "../Component/DecorationGallery";
 import { getLoggedInUser } from "../utils/auth";
 
+// Import your sliders / galleries (placeholders if not existing)
+import MainSlider from "../Component/MainSlider";
+import ProductGallery from "../Component/ProductGallery";
+
 // Images
 import murtiidol from "../Component/Images/murti-&-Idol.jpg";
 import decoration from "../Component/Images/decoration.jpg";
@@ -88,11 +92,13 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Get logged-in user
   useEffect(() => {
     const loggedInUser = getLoggedInUser();
     if (loggedInUser) setUser(loggedInUser);
   }, []);
 
+  // Search functionality
   const handleSearch = async () => {
     if (!searchQuery) return setSearchResults([]);
     try {
@@ -115,6 +121,10 @@ export default function Home() {
     { title: "Event Booking", img: event },
     { title: "Garba Dresses", img: garbadress },
   ];
+
+  // Helper to generate category route
+  const getCategoryRoute = (title) =>
+    `/category/${title.toLowerCase().replace(/ & /g, "-").replace(/\s+/g, "-")}`;
 
   return (
     <Box sx={{ bgcolor: "#f3f4f6", minHeight: "100vh", fontFamily: "'Mukta', sans-serif" }}>
@@ -307,7 +317,7 @@ export default function Home() {
                 textAlign: "center",
                 cursor: "pointer",
               }}
-              onClick={() => navigate(`/all`)}
+              onClick={() => navigate(getCategoryRoute(cat.title))}
             >
               <Box
                 component="img"
@@ -383,7 +393,7 @@ export default function Home() {
                   '&:hover': { transform: "translateY(-5px)", boxShadow: 6 },
                 }}
               >
-                <adv.icon style={{ fontSize: 40, color: "#FF9900", marginBottom: 16 }} />
+                {React.createElement(adv.icon, { style: { fontSize: 40, color: "#FF9900", marginBottom: 16 } })}
                 <Typography variant="h6" mb={1}>{adv.title}</Typography>
                 <Typography variant="body2">{adv.desc}</Typography>
               </Paper>
