@@ -27,7 +27,7 @@ import DecorationGallery from "../Component/DecorationGallery";
 import { getLoggedInUser } from "../utils/auth";
 
 // Placeholder imports (if these components exist in your project)
-import MainSlider from "../Component/MainSlider";
+import Slider from "../Component/Slider";
 import ProductGallery from "../Component/ProductGallery";
 
 // Images
@@ -241,7 +241,7 @@ export default function Home() {
       )}
 
       {/* Main Slider */}
-      <MainSlider />
+      <Slider />
 
       {/* Services */}
       <Container sx={{ py: 6 }}>
