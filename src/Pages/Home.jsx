@@ -1,7 +1,6 @@
 // src/Pages/Home.jsx
 import React, { useEffect, useRef, useState } from "react";
 import Loader from "../Component/Loader";
-
 import {
   Box,
   Typography,
@@ -20,7 +19,7 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
-import SmartToyIcon from "@mui/icons-material/SmartToy"; // 🤖 Robot icon
+import SmartToyIcon from "@mui/icons-material/SmartToy";
 import CloseIcon from "@mui/icons-material/Close";
 import { useNavigate } from "react-router-dom";
 import Slider from "../Component/Slider";
@@ -47,11 +46,10 @@ export default function Home() {
   const [user, setUser] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [helpOpen, setHelpOpen] = useState(false); // Help dialog state
+  const [helpOpen, setHelpOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
-
   const ganeshNames = [
     "गणपति","विनायक","विघ्नहर्ता","सिद्धिविनायक","लम्बोदर",
     "गजानन","वक्रतुंड","धूम्रवर्ण","एकदंत","कपिल",
@@ -60,6 +58,14 @@ export default function Home() {
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  // ✅ Loader timeout
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const loggedInUser = getLoggedInUser();
@@ -85,17 +91,15 @@ export default function Home() {
       console.error(err);
     }
   };
-  useEffect(() => {
-  const timer = setTimeout(() => {
-    setLoading(false);
-  }, 2000); // 2 seconds loader
-  return () => clearTimeout(timer);
-}, []);
-
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") handleSearch();
   };
+
+  // ✅ 👇 YAHI PE Loader ko return karna hai
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <Box sx={{ bgcolor: "#f3f4f6", minHeight: "100vh", position: "relative" }}>
@@ -185,9 +189,8 @@ export default function Home() {
 
       {/* ✅ Main Content */}
       <Slider />
-      if (loading) {
-  return <Loader />;
-}     <Container maxWidth="xl" sx={{ mt: 6 }}>
+
+      <Container maxWidth="xl" sx={{ mt: 6 }}>
         {/* Category Section */}
         <Typography variant="h5" fontWeight="bold" mb={3} sx={{ color: "#b45309" }}>
           Shop by Category
