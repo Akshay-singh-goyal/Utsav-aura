@@ -173,7 +173,7 @@ export default function OrderConfirmation() {
   const items = order.items || [];
   const shipping = order.shipping || {};
   const subtotal = items.reduce((sum, item) => sum + getItemTotal(item), 0);
-  const delivery = order.deliveryCharge ?? (subtotal > 999 ? 0 : 49);
+  const delivery = subTotal > 999 ? 75 : 90 ;
   const grandTotal = subtotal + delivery;
 
   return (
