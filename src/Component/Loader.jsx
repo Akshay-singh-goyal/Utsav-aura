@@ -40,16 +40,6 @@ const Loader = () => {
             objectFit: "cover",
           }}
         />
-
-        {/* Loader with custom color */}
-        <CircularProgress
-          size={70}
-          thickness={5}
-          sx={{
-            color: "#fff", // changed to white
-          }}
-        />
-
         {/* Loading Text */}
         <Typography
           sx={{
@@ -67,4 +57,4 @@ const Loader = () => {
   );
 };
 
-export default Loader;
+export default Loader; 
