@@ -31,7 +31,16 @@ export default function ProductGallery() {
   const token = localStorage.getItem("token");
   const isLoggedIn = !!token;
 
-  const categories = ["All", "Garba", "Pooja Items", "Navratri Specials"];
+  // Updated categories including festival products
+  const categories = [
+    "All",
+    "Decorations & Home Essentials",
+    "Gifts & Hampers",
+    "Clothing & Accessories",
+    "Food & Beverages",
+    "Spiritual & Religious Items",
+    "Toys & Kids’ Products",
+  ];
 
   useEffect(() => {
     fetchProducts();
@@ -54,7 +63,7 @@ export default function ProductGallery() {
       ? products
       : products.filter((p) => p.category === category);
 
-  // ✅ Add to Cart
+  // Add to Cart
   const handleAddToCart = (product) => {
     if (!isLoggedIn) {
       toast.warning("Please login to add products to your cart.");
@@ -72,7 +81,7 @@ export default function ProductGallery() {
     toast.success(`${product.name} added to cart!`);
   };
 
-  // ✅ Buy Now → Navigate to product details page
+  // Buy Now → Navigate to product details page
   const handleBuyNow = (itemId) => {
     if (!isLoggedIn) {
       toast.warning("Please login to buy products.");
@@ -112,7 +121,7 @@ export default function ProductGallery() {
         </FormControl>
       </Box>
 
-      {/* Horizontal Scroll */}
+      {/* Products Display */}
       <Box
         sx={{
           display: "flex",
@@ -140,7 +149,6 @@ export default function ProductGallery() {
               },
             }}
           >
-            {/* Product Image */}
             <CardMedia
               component="img"
               height="200"
@@ -149,13 +157,11 @@ export default function ProductGallery() {
               sx={{ borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
             />
 
-            {/* Product Details */}
             <CardContent>
               <Typography variant="h6" fontWeight="bold" color="#4a3c1b">
                 {p.name}
               </Typography>
 
-              {/* Price with Discount */}
               <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 1 }}>
                 <Typography
                   variant="subtitle1"
@@ -163,16 +169,11 @@ export default function ProductGallery() {
                 >
                   ₹{p.originalPrice}
                 </Typography>
-                <Typography
-                  variant="h6"
-                  color="#fc8019"
-                  fontWeight="bold"
-                >
+                <Typography variant="h6" color="#fc8019" fontWeight="bold">
                   ₹{p.discountPrice}
                 </Typography>
               </Stack>
 
-              {/* Description */}
               <Typography
                 variant="body2"
                 color="text.secondary"
@@ -183,7 +184,6 @@ export default function ProductGallery() {
 
               <Divider sx={{ my: 1 }} />
 
-              {/* Extra Details */}
               <Typography variant="caption" color="text.secondary">
                 Category: {p.category}
               </Typography>
@@ -207,7 +207,6 @@ export default function ProductGallery() {
                 sx={{ mt: 1 }}
               />
 
-              {/* Buttons */}
               <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
                 <Button
                   variant="outlined"
