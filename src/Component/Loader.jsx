@@ -26,47 +26,29 @@ const Loader = () => {
           backdropFilter: "blur(10px)",
         }}
       >
-        {/* Logo with rotating ring */}
+        {/* Logo */}
         <Box
+          component="img"
+          src={utsavLogo}
+          alt="Utsav Logo"
           sx={{
-            position: "relative",
-            width: "140px",
-            height: "140px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
+            width: "120px",
+            height: "120px",
+            borderRadius: "50%", // circular logo
+            border: "4px solid rgba(255, 255, 255, 0.6)", // border around logo
             marginBottom: "20px",
+            objectFit: "cover",
           }}
-        >
-          {/* Rotating ring */}
-          <Box
-            sx={{
-              position: "absolute",
-              width: "140px",
-              height: "140px",
-              borderRadius: "50%",
-              border: "4px solid rgba(255,255,255,0.6)",
-              borderTopColor: "transparent",
-              animation: "spin 1.5s linear infinite",
-            }}
-          />
+        />
 
-          {/* Logo */}
-          <Box
-            component="img"
-            src={utsavLogo}
-            alt="Utsav Logo"
-            sx={{
-              width: "120px",
-              height: "120px",
-              borderRadius: "50%",
-              objectFit: "cover",
-            }}
-          />
-        </Box>
-
-        {/* Loader */}
-        <CircularProgress size={70} thickness={5} color="primary" />
+        {/* Loader with custom color */}
+        <CircularProgress
+          size={70}
+          thickness={5}
+          sx={{
+            color: "#fff", // changed to white
+          }}
+        />
 
         {/* Loading Text */}
         <Typography
@@ -81,17 +63,6 @@ const Loader = () => {
           Welcome to Ustav-Aura. Loading, please wait...
         </Typography>
       </Box>
-
-      {/* Keyframes for spin animation */}
-      <Box
-        component="style"
-        children={`
-          @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-        `}
-      />
     </Box>
   );
 };
