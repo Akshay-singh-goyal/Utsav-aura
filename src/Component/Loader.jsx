@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, CircularProgress, Typography } from "@mui/material";
+import utsavLogo from "./Images/utsavlogo.png"; // make sure this path is correct
 
 const Loader = () => {
   return (
@@ -25,7 +26,25 @@ const Loader = () => {
           backdropFilter: "blur(10px)",
         }}
       >
+        {/* Logo */}
+        <Box
+          component="img"
+          src={utsavLogo}
+          alt="Utsav Logo"
+          sx={{
+            width: "120px",
+            height: "120px",
+            borderRadius: "50%", // circular logo
+            border: "4px solid rgba(255, 255, 255, 0.6)", // border around logo
+            marginBottom: "20px",
+            objectFit: "cover",
+          }}
+        />
+
+        {/* Loader */}
         <CircularProgress size={70} thickness={5} color="primary" />
+
+        {/* Loading Text */}
         <Typography
           sx={{
             color: "#fff",
