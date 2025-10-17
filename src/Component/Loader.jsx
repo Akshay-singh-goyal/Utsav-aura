@@ -65,9 +65,6 @@ const Loader = () => {
           />
         </Box>
 
-        /* {/* Loader */}
-        <CircularProgress size={70} thickness={5} color="primary" /> */
-
         {/* Loading Text */}
         <Typography
           sx={{
