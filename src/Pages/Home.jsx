@@ -29,10 +29,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { useNavigate } from "react-router-dom";
 import Loader from "../Component/Loader";
-import MainSlider from "../Component/Slider";
 import LiveDarshan from "../Component/Livedareshan";
 import LiveHistory from "./LiveHistory";
-import ProductGallery from "../Component/UserPackageViewPage";
 import DecorationGallery from "../Component/DecorationGallery";
 import { getLoggedInUser } from "../utils/auth";
 
@@ -344,10 +342,7 @@ export default function Home() {
         </Grid>
       </Container>
 
-      {/* User Packages */}
-      <Container sx={{ mt: 8 }}>
-        <UserPackageViewPage />
-      </Container>
+      
 
       {/* Advantages / Why Choose Us */}
       <Container sx={{ py: 10 }}>
