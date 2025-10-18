@@ -25,8 +25,6 @@ import LiveDarshan from "../Component/Livedareshan";
 import LiveHistory from "./LiveHistory";
 import DecorationGallery from "../Component/DecorationGallery";
 import { getLoggedInUser } from "../utils/auth";
-
-// Your Slider component
 import Slider from "../Component/Slider";
 import ProductGallery from "../Component/ProductGallery";
 
@@ -36,10 +34,8 @@ import decoration from "../Component/Images/decoration.jpg";
 import garbadress from "../Component/Images/garba-dress.jpg";
 import event from "../Component/Images/event.jpg";
 
-// Slide transition for Dialog
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
-// Sample Data
 const services = [
   { title: "Room Shifting", desc: "Local & Intercity moving with care.", img: "/images/room-shifting.jpg" },
   { title: "House Cleaning", desc: "Regular, deep or move-in cleaning services.", img: "/images/house-cleaning.jpg" },
@@ -60,7 +56,6 @@ const advantages = [
   { title: "Flexible Scheduling", desc: "Book services anytime, anywhere.", icon: FaBroom },
 ];
 
-// Slider settings
 const sliderSettings = {
   dots: true,
   infinite: true,
@@ -120,7 +115,7 @@ export default function Home() {
     <Box sx={{ bgcolor: "#f3f4f6", minHeight: "100vh", fontFamily: "'Mukta', sans-serif" }}>
       <audio ref={audioRef} src="/diwali-bgm.mp3" loop autoPlay />
 
-      {/* Navbar */}
+      {/* ===================== NAVBAR ===================== */}
       <AppBar position="sticky" color="transparent" elevation={0}>
         <Toolbar sx={{ justifyContent: "space-between" }}>
           <Box component="img" src="/images/logo.png" alt="Logo" height={50} />
@@ -133,45 +128,7 @@ export default function Home() {
         </Toolbar>
       </AppBar>
 
-      {/* Hero Section */}
-      <Box
-        sx={{
-          minHeight: "80vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
-          backgroundImage: "url('/images/hero-bg.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          color: "#fff",
-          px: 2,
-        }}
-      >
-        <Box>
-          <Typography variant={isMobile ? "h4" : "h2"} fontWeight="bold" mb={2}>
-            Stress-Free Moving & Sparkling Clean Homes
-          </Typography>
-          <Typography variant={isMobile ? "body1" : "h5"} mb={4}>
-            Reliable, affordable, and safe services for your home or office.
-          </Typography>
-          <Stack direction="row" spacing={2} justifyContent="center">
-            <Button variant="contained" color="secondary" size="large">Book Now</Button>
-            <Button variant="outlined" color="inherit" size="large">Get Free Estimate</Button>
-          </Stack>
-        </Box>
-      </Box>
-
-      {/* Special Offer */}
-      <Container sx={{ py: 4, textAlign: "center" }}>
-        <Paper sx={{ p: 3, bgcolor: "#FFEBCC", borderRadius: 3 }}>
-          <Typography variant="h6" fontWeight="bold">
-            🎉 Special Offer: Get 20% Off on Your First Booking!
-          </Typography>
-        </Paper>
-      </Container>
-
-      {/* Search Bar */}
+      {/* ===================== SEARCH BAR ===================== */}
       <Box
         sx={{
           display: "flex",
@@ -207,79 +164,93 @@ export default function Home() {
         </IconButton>
       </Box>
 
-      {/* Search Results */}
-      {searchResults.length > 0 && (
-        <Container sx={{ py: 5 }}>
-          <Typography variant="h5" mb={3} sx={{ color: "#f59e0b", fontWeight: "bold" }}>
-            Search Results for "{searchQuery}"
-          </Typography>
-          <Grid container spacing={3}>
-            {searchResults.map((item) => (
-              <Grid item xs={12} sm={6} md={4} key={item._id}>
-                <Paper
-                  elevation={8}
-                  sx={{
-                    borderRadius: 3,
-                    overflow: "hidden",
-                    cursor: "pointer",
-                    transition: "0.3s",
-                    "&:hover": { transform: "scale(1.05)", boxShadow: "0 8px 20px rgba(0,0,0,0.3)" },
-                  }}
-                  onClick={() => navigate(`/${item.type.toLowerCase()}/${item._id}`)}
-                >
-                  <img
-                    src={item.image || "/placeholder.png"}
-                    alt={item.name}
-                    style={{ width: "100%", height: 180, objectFit: "cover" }}
-                  />
-                  <Box sx={{ p: 2, bgcolor: "#fff8e1" }}>
-                    <Typography variant="h6" sx={{ color: "#b45309", fontWeight: "bold" }}>{item.name}</Typography>
-                    <Typography variant="body2" color="text.secondary">Type: {item.type}</Typography>
-                    {item.price && <Typography variant="body1" fontWeight="bold">₹{item.price}</Typography>}
-                  </Box>
-                </Paper>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
-      )}
-
-      {/* Slider Component */}
+      {/* ===================== SLIDER / HERO SECTION ===================== */}
       <Slider />
 
-      {/* Services */}
-      <Container sx={{ py: 6 }}>
-        <Typography variant="h4" fontWeight="bold" mb={4} textAlign="center">
-          Our Services
-        </Typography>
-        <Slider {...sliderSettings}>
-          {services.map((service) => (
-            <Paper key={service.title} sx={{ p: 2, borderRadius: 3, textAlign: "center", mx: 1, '&:hover': { transform: 'scale(1.05)', boxShadow: 6 } }}>
-              <img src={service.img} alt={service.title} style={{ width: "100%", borderRadius: 12, height: 180, objectFit: "cover" }} />
-              <Typography variant="h6" mt={2}>{service.title}</Typography>
-              <Typography variant="body2">{service.desc}</Typography>
-              <Button variant="contained" color="primary" sx={{ mt: 2 }}>Book Now</Button>
-            </Paper>
-          ))}
-        </Slider>
-      </Container>
-
-      {/* Categories */}
+      {/* ===================== SHOP BY CATEGORY ===================== */}
       <Container maxWidth="xl" sx={{ mt: 6 }}>
-        <Typography variant="h4" fontWeight="bold" mb={3} sx={{ color: "#f59e0b", textAlign: "center", letterSpacing: 1 }}>
+        <Typography
+          variant="h4"
+          fontWeight="bold"
+          mb={3}
+          sx={{ color: "#f59e0b", textAlign: "center", letterSpacing: 1 }}
+        >
           Shop by Category
         </Typography>
-        <Box sx={{ display: "flex", overflowX: "auto", py: 2, px: 1, gap: 3, "&::-webkit-scrollbar": { display: "none" }, scrollbarWidth: "none" }}>
+        <Box
+          sx={{
+            display: "flex",
+            overflowX: "auto",
+            py: 2,
+            px: 1,
+            gap: 3,
+            "&::-webkit-scrollbar": { display: "none" },
+            scrollbarWidth: "none",
+          }}
+        >
           {categories.map((cat) => (
-            <Box key={cat.title} sx={{ flex: "0 0 auto", textAlign: "center", cursor: "pointer" }} onClick={() => navigate(`/all`)}>
-              <Box component="img" src={cat.img} alt={cat.title} sx={{ width: 100, height: 100, borderRadius: "50%", objectFit: "cover", mb: 1, border: "3px solid #f59e0b", transition: "0.3s", "&:hover": { transform: "scale(1.1)" } }} />
-              <Typography variant="subtitle2" fontWeight="bold" sx={{ color: "#b45309" }}>{cat.title}</Typography>
+            <Box
+              key={cat.title}
+              sx={{ flex: "0 0 auto", textAlign: "center", cursor: "pointer" }}
+              onClick={() => navigate(`/all`)}
+            >
+              <Box
+                component="img"
+                src={cat.img}
+                alt={cat.title}
+                sx={{
+                  width: 100,
+                  height: 100,
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  mb: 1,
+                  border: "3px solid #f59e0b",
+                  transition: "0.3s",
+                  "&:hover": { transform: "scale(1.1)" },
+                }}
+              />
+              <Typography variant="subtitle2" fontWeight="bold" sx={{ color: "#b45309" }}>
+                {cat.title}
+              </Typography>
             </Box>
           ))}
         </Box>
       </Container>
 
-      {/* Featured Products */}
+      {/* ===================== CATEGORY OF SERVICES (REPLACED OUR SERVICES) ===================== */}
+      <Container sx={{ py: 6 }}>
+        <Typography variant="h4" fontWeight="bold" mb={4} textAlign="center" sx={{ color: "#ef4444" }}>
+          Category of Services
+        </Typography>
+        <Grid container spacing={4}>
+          {services.map((service) => (
+            <Grid item xs={12} sm={6} md={3} key={service.title}>
+              <Paper
+                sx={{
+                  p: 2,
+                  borderRadius: 3,
+                  textAlign: "center",
+                  transition: "0.3s",
+                  "&:hover": { transform: "translateY(-5px)", boxShadow: 6 },
+                }}
+              >
+                <img
+                  src={service.img}
+                  alt={service.title}
+                  style={{ width: "100%", borderRadius: 12, height: 180, objectFit: "cover" }}
+                />
+                <Typography variant="h6" mt={2}>{service.title}</Typography>
+                <Typography variant="body2" color="text.secondary">{service.desc}</Typography>
+                <Button variant="contained" color="primary" sx={{ mt: 2 }}>
+                  Book Now
+                </Button>
+              </Paper>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+
+      {/* ===================== FEATURED PRODUCTS ===================== */}
       <Container sx={{ mt: 8 }}>
         <Typography variant="h4" fontWeight="bold" mb={3} sx={{ color: "#ef4444", textAlign: "center" }}>
           Featured Products
@@ -287,7 +258,7 @@ export default function Home() {
         <ProductGallery />
       </Container>
 
-      {/* Decorations */}
+      {/* ===================== DECORATION GALLERY ===================== */}
       <Container sx={{ mt: 8 }}>
         <Typography variant="h4" fontWeight="bold" mb={3} sx={{ color: "#ef4444", textAlign: "center" }}>
           Decorations
@@ -295,7 +266,7 @@ export default function Home() {
         <DecorationGallery />
       </Container>
 
-      {/* Live Sessions */}
+      {/* ===================== LIVE SESSIONS ===================== */}
       <Container sx={{ mt: 8 }}>
         <Typography variant="h4" fontWeight="bold" textAlign="center" gutterBottom sx={{ color: "#ef4444", mb: 4 }}>
           Live Sessions
@@ -314,7 +285,7 @@ export default function Home() {
         </Grid>
       </Container>
 
-      {/* Advantages */}
+      {/* ===================== ADVANTAGES ===================== */}
       <Container sx={{ py: 10 }}>
         <Typography variant="h4" fontWeight="bold" textAlign="center" mb={6} sx={{ color: "#f59e0b" }}>
           Why Choose Us?
@@ -322,7 +293,14 @@ export default function Home() {
         <Grid container spacing={4} justifyContent="center">
           {advantages.map((adv) => (
             <Grid item xs={12} md={3} key={adv.title}>
-              <Paper sx={{ p: 4, borderRadius: 3, textAlign: "center", '&:hover': { transform: "translateY(-5px)", boxShadow: 6 } }}>
+              <Paper
+                sx={{
+                  p: 4,
+                  borderRadius: 3,
+                  textAlign: "center",
+                  '&:hover': { transform: "translateY(-5px)", boxShadow: 6 }
+                }}
+              >
                 {React.createElement(adv.icon, { style: { fontSize: 40, color: "#FF9900", marginBottom: 16 } })}
                 <Typography variant="h6" mb={1}>{adv.title}</Typography>
                 <Typography variant="body2">{adv.desc}</Typography>
@@ -332,7 +310,7 @@ export default function Home() {
         </Grid>
       </Container>
 
-      {/* Customer Testimonials */}
+      {/* ===================== TESTIMONIALS ===================== */}
       <Container sx={{ py: 6, bgcolor: "#f9fafb" }}>
         <Typography variant="h4" fontWeight="bold" mb={4} textAlign="center">
           What Our Customers Say
