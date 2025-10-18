@@ -32,6 +32,11 @@ import ProductGallery from "../Component/UserPackageViewPage";
 import DecorationGallery from "../Component/DecorationGallery";
 import { getLoggedInUser } from "../utils/auth";
 
+// Slider imports (important!)
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
 // Images
 import murtiidol from "../Component/Images/murti-&-Idol.jpg";
 import decoration from "../Component/Images/decoration.jpg";
@@ -343,7 +348,7 @@ export default function Home() {
 
       {/* User Packages */}
       <Container sx={{ mt: 8 }}>
-        <ProductGallery /> {/* Assuming you wanted UserPackageViewPage replaced */}
+        <ProductGallery />
       </Container>
 
       {/* Advantages */}
@@ -412,14 +417,25 @@ export default function Home() {
         TransitionComponent={Transition}
         keepMounted
         onClose={() => setHelpOpen(false)}
-        sx={{ "& .MuiDialog-paper": { borderRadius: 3, width: isMobile ? "90%" : 400, position: "fixed", bottom: 24, right: 24, m: 0 } }}
+        sx={{
+          "& .MuiDialog-paper": {
+            borderRadius: 3,
+            width: isMobile ? "90%" : 400,
+            position: "fixed",
+            bottom: 24,
+            right: 24,
+            m: 0,
+          },
+        }}
       >
         <DialogTitle>Help Center</DialogTitle>
         <DialogContent dividers>
           <Typography>Hi there! Need assistance? Chat with us or call at 123-456-7890.</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setHelpOpen(false)} color="primary">Close</Button>
+          <Button onClick={() => setHelpOpen(false)} color="primary">
+            Close
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
