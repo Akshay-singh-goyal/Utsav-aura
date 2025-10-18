@@ -144,11 +144,8 @@ export default function Navbar() {
 
   const otherLinks = [
     { name: "My Orders", path: "/my-order", icon: <FaShoppingCart /> },
-    { name: "Billing", path: "/billing" },
     { name: "My Cart", path: "/cart", icon: <FaShoppingCart /> },
-    { name: "Privacy Center", path: "/privacy" },
-    { name: "Feedback", path: "/feedback" },
-    { name: "History", path: "/history" },
+    
   ];
 
   return (
