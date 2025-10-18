@@ -21,7 +21,6 @@ import {
   Slide,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import Slider from "react-slick";
 import { FaTruckMoving, FaBroom, FaCheckCircle, FaCalendarAlt, FaHeadset } from "react-icons/fa";
 import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
