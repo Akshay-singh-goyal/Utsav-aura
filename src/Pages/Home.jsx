@@ -118,7 +118,6 @@ export default function Home() {
       {/* ===================== NAVBAR ===================== */}
       <AppBar position="sticky" color="transparent" elevation={0}>
         <Toolbar sx={{ justifyContent: "space-between" }}>
-          <Box component="img" src="/images/logo.png" alt="Logo" height={50} />
           <Stack direction="row" spacing={2} sx={{ display: { xs: "none", md: "flex" } }}>
             {["Home", "Services", "Pricing", "About Us", "Blog", "Contact"].map((link) => (
               <Button key={link} color="inherit">{link}</Button>
@@ -136,7 +135,7 @@ export default function Home() {
           alignItems: "center",
           py: isMobile ? 2 : 3,
           px: 2,
-          bgcolor: "#fff3e0",
+          bgcolor: "#000000",
           borderBottom: "2px solid #f59e0b",
           position: "sticky",
           top: 0,
