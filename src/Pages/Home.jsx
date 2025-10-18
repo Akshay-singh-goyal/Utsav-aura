@@ -1,31 +1,19 @@
 // src/Pages/Home.jsx
 import React, { useEffect, useRef, useState } from "react";
 import {
-  AppBar,
-  Toolbar,
   Box,
   Button,
   Container,
   Typography,
   Paper,
   Grid,
-  Avatar,
-  Stack,
   TextField,
   IconButton,
   useMediaQuery,
-  Slide,
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import CloseIcon from "@mui/icons-material/Close";
-import SearchIcon from "@mui/icons-material/Search";
 import { useTheme } from "@mui/material/styles";
 import { FaTruckMoving, FaBroom, FaCheckCircle, FaCalendarAlt } from "react-icons/fa";
+import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
 import Loader from "../Component/Loader";
 import LiveDarshan from "../Component/Livedareshan";
@@ -34,6 +22,9 @@ import DecorationGallery from "../Component/DecorationGallery";
 import { getLoggedInUser } from "../utils/auth";
 import Slider from "../Component/Slider";
 import ProductGallery from "../Component/ProductGallery";
+
+// New Header component
+import Header from "../Components/Header";
 
 // Images
 import murtiidol from "../Component/Images/murti-&-Idol.jpg";
@@ -48,30 +39,12 @@ const services = [
   { title: "Furniture Assembly", desc: "Expert furniture installation & assembly.", img: "/images/furniture.jpg" },
 ];
 
-const reviews = [
-  { name: "Ramesh Kumar", comment: "Excellent service! My house is sparkling clean.", photo: "/images/user1.jpg" },
-  { name: "Priya Sharma", comment: "Fast and careful moving service. Highly recommend!", photo: "/images/user2.jpg" },
-  { name: "Amit Verma", comment: "Affordable prices and professional staff.", photo: "/images/user3.jpg" },
-];
-
 const advantages = [
   { title: "Trusted Professionals", desc: "Experienced & verified staff for safe handling.", icon: FaCheckCircle },
   { title: "Affordable Prices", desc: "Transparent pricing with no hidden charges.", icon: FaCalendarAlt },
   { title: "Safe Handling", desc: "Your belongings handled with care & safety.", icon: FaTruckMoving },
   { title: "Flexible Scheduling", desc: "Book services anytime, anywhere.", icon: FaBroom },
 ];
-
-const sliderSettings = {
-  dots: true,
-  infinite: true,
-  speed: 600,
-  slidesToShow: 3,
-  slidesToScroll: 1,
-  responsive: [
-    { breakpoint: 960, settings: { slidesToShow: 2 } },
-    { breakpoint: 600, settings: { slidesToShow: 1 } },
-  ],
-};
 
 export default function Home() {
   const theme = useTheme();
@@ -80,12 +53,8 @@ export default function Home() {
   const audioRef = useRef(null);
 
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-
-  const navLinks = ["Home", "Services", "Pricing", "About Us", "Blog", "Contact"];
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 2000);
@@ -94,7 +63,7 @@ export default function Home() {
 
   useEffect(() => {
     const loggedInUser = getLoggedInUser();
-    if (loggedInUser) setUser(loggedInUser);
+    if (loggedInUser) console.log("User:", loggedInUser);
   }, []);
 
   const handleSearch = async () => {
@@ -120,60 +89,11 @@ export default function Home() {
   ];
 
   return (
-    <Box sx={{ bgcolor: "#000000", minHeight: "100vh", fontFamily: "'Mukta', sans-serif" }}>
+    <Box sx={{ bgcolor: "#000", minHeight: "100vh", fontFamily: "'Mukta', sans-serif" }}>
       <audio ref={audioRef} src="/diwali-bgm.mp3" loop autoPlay />
 
-      {/* ===================== NAVBAR ===================== */}
-      <AppBar position="sticky" color="default" elevation={2} sx={{ bgcolor: "#fff" }}>
-        <Toolbar sx={{ justifyContent: "space-between" }}>
-          <Typography variant="h6" sx={{ fontWeight: "bold", color: "#ef4444" }}>
-            Utsav-Aura
-          </Typography>
-
-          {/* Desktop Menu */}
-          {!isMobile && (
-            <Stack direction="row" spacing={2}>
-              {navLinks.map((link) => (
-                <Button key={link} color="inherit">{link}</Button>
-              ))}
-              <Button variant="contained" color="secondary">Book Now</Button>
-            </Stack>
-          )}
-
-          {/* Mobile Hamburger */}
-          {isMobile && (
-            <IconButton onClick={() => setDrawerOpen(true)}>
-              <MenuIcon />
-            </IconButton>
-          )}
-        </Toolbar>
-      </AppBar>
-
-      {/* ===================== DRAWER ===================== */}
-      <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <Box sx={{ width: 250, p: 2 }}>
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <Typography variant="h6" sx={{ fontWeight: "bold" }}>Menu</Typography>
-            <IconButton onClick={() => setDrawerOpen(false)}>
-              <CloseIcon />
-            </IconButton>
-          </Box>
-          <List>
-            {navLinks.map((text) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton onClick={() => setDrawerOpen(false)}>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-            <ListItem disablePadding>
-              <ListItemButton>
-                <Button fullWidth variant="contained" color="secondary">Book Now</Button>
-              </ListItemButton>
-            </ListItem>
-          </List>
-        </Box>
-      </Drawer>
+      {/* ✅ Header imported here */}
+      <Header />
 
       {/* ===================== SEARCH BAR ===================== */}
       <Box
@@ -294,7 +214,7 @@ export default function Home() {
         </Grid>
       </Container>
 
-      {/* ===================== FEATURED PRODUCTS ===================== */}
+      {/* ===================== PRODUCT & DECORATION ===================== */}
       <Container sx={{ mt: 8 }}>
         <Typography variant="h4" fontWeight="bold" mb={3} sx={{ color: "#ef4444", textAlign: "center" }}>
           Featured Products
@@ -302,7 +222,6 @@ export default function Home() {
         <ProductGallery />
       </Container>
 
-      {/* ===================== DECORATION GALLERY ===================== */}
       <Container sx={{ mt: 8 }}>
         <Typography variant="h4" fontWeight="bold" mb={3} sx={{ color: "#ef4444", textAlign: "center" }}>
           Decorations
@@ -310,7 +229,7 @@ export default function Home() {
         <DecorationGallery />
       </Container>
 
-      {/* ===================== LIVE SESSIONS ===================== */}
+      {/* ===================== LIVE ===================== */}
       <Container sx={{ mt: 8 }}>
         <Typography variant="h4" fontWeight="bold" textAlign="center" gutterBottom sx={{ color: "#ef4444", mb: 4 }}>
           Live Sessions
