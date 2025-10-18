@@ -22,10 +22,6 @@ import DecorationGallery from "../Component/DecorationGallery";
 import { getLoggedInUser } from "../utils/auth";
 import Slider from "../Component/Slider";
 import ProductGallery from "../Component/ProductGallery";
-
-// New Header component
-import Header from "../Components/Header";
-
 // Images
 import murtiidol from "../Component/Images/murti-&-Idol.jpg";
 import decoration from "../Component/Images/decoration.jpg";
@@ -92,8 +88,7 @@ export default function Home() {
     <Box sx={{ bgcolor: "#000", minHeight: "100vh", fontFamily: "'Mukta', sans-serif" }}>
       <audio ref={audioRef} src="/diwali-bgm.mp3" loop autoPlay />
 
-      {/* ✅ Header imported here */}
-      <Header />
+      
 
       {/* ===================== SEARCH BAR ===================== */}
       <Box
