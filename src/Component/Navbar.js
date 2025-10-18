@@ -80,14 +80,12 @@ export default function Navbar() {
     return () => clearInterval(interval);
   }, []);
 
-  // Audio Toggle
   const toggleAudio = () => {
     if (isPlaying) audio.pause();
     else audio.play();
     setIsPlaying(!isPlaying);
   };
 
-  // Fetch Profile
   useEffect(() => {
     const fetchProfile = async () => {
       if (!token) return;
@@ -112,7 +110,6 @@ export default function Navbar() {
     toast.success("Logged out successfully!");
   };
 
-  // 🔍 Search Function
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
     try {
@@ -145,7 +142,6 @@ export default function Navbar() {
   const otherLinks = [
     { name: "My Orders", path: "/my-order", icon: <FaShoppingCart /> },
     { name: "My Cart", path: "/cart", icon: <FaShoppingCart /> },
-    
   ];
 
   return (
@@ -168,7 +164,7 @@ export default function Navbar() {
             justifyContent: "space-between",
           }}
         >
-          {/* 🪔 Logo */}
+          {/* Logo */}
           <Box
             component="img"
             src={utsavLogo}
@@ -187,7 +183,7 @@ export default function Navbar() {
             onClick={() => navigate("/")}
           />
 
-          {/* 🙏 Rotating Names */}
+          {/* Rotating Names */}
           <Typography
             variant="h6"
             fontWeight="bold"
@@ -196,17 +192,14 @@ export default function Navbar() {
             {ganeshNames[currentNameIndex]}
           </Typography>
 
-          {/* 📱 Right Icons */}
+          {/* Right Icons */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            {/* Cart (Desktop) */}
             <IconButton
               sx={{ color: colors.text, display: { xs: "none", md: "flex" } }}
               onClick={() => navigate("/cart")}
             >
               <ShoppingCart />
             </IconButton>
-
-            {/* Hamburger (Mobile) */}
             <IconButton
               edge="end"
               sx={{ color: colors.primary, display: { xs: "flex", md: "none" } }}
@@ -216,7 +209,7 @@ export default function Navbar() {
             </IconButton>
           </Box>
 
-          {/* 🖥 Desktop Only */}
+          {/* Desktop Only */}
           <Box
             sx={{
               display: { xs: "none", md: "flex" },
@@ -225,7 +218,6 @@ export default function Navbar() {
               ml: 2,
             }}
           >
-            {/* Home */}
             <Button
               startIcon={<Home />}
               sx={{ color: colors.text }}
@@ -234,7 +226,6 @@ export default function Navbar() {
               Home
             </Button>
 
-            {/* 🔍 Search */}
             <TextField
               placeholder="Search..."
               size="small"
@@ -249,7 +240,6 @@ export default function Navbar() {
               }}
             />
 
-            {/* 👤 Profile / Login */}
             {!isLoggedIn ? (
               <Button
                 variant="outlined"
@@ -320,7 +310,6 @@ export default function Navbar() {
               </>
             )}
 
-            {/* 🪔 Audio */}
             <Button
               onClick={toggleAudio}
               startIcon={isPlaying ? <FaPause /> : <FaPlay />}
@@ -341,7 +330,22 @@ export default function Navbar() {
         </Toolbar>
       </AppBar>
 
-      {/* 📱 Drawer (Mobile Menu) */}
+      {/* Cleaning Services Header */}
+      <Box
+        sx={{
+          backgroundColor: "#fbbf24",
+          color: "#1e293b",
+          py: 3,
+          textAlign: "center",
+          fontWeight: "bold",
+          fontSize: { xs: "1.2rem", sm: "1.5rem", md: "1.8rem" },
+          letterSpacing: 1,
+        }}
+      >
+        Cleaning Services
+      </Box>
+
+      {/* Drawer */}
       <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
         <Box sx={{ width: 280 }}>
           <Box
@@ -361,13 +365,7 @@ export default function Navbar() {
 
           <List>
             {/* Home */}
-            <ListItem
-              button
-              onClick={() => {
-                navigate("/");
-                setDrawerOpen(false);
-              }}
-            >
+            <ListItem button onClick={() => { navigate("/"); setDrawerOpen(false); }}>
               <ListItemIcon><Home /></ListItemIcon>
               <ListItemText primary="Home" />
             </ListItem>
@@ -401,27 +399,14 @@ export default function Navbar() {
             </Collapse>
 
             {/* Cart */}
-            <ListItem
-              button
-              onClick={() => {
-                navigate("/cart");
-                setDrawerOpen(false);
-              }}
-            >
+            <ListItem button onClick={() => { navigate("/cart"); setDrawerOpen(false); }}>
               <ListItemIcon><ShoppingCart /></ListItemIcon>
               <ListItemText primary="My Cart" />
             </ListItem>
 
             {/* Links */}
             {links.map((link, i) => (
-              <ListItem
-                button
-                key={i}
-                onClick={() => {
-                  navigate(link.path);
-                  setDrawerOpen(false);
-                }}
-              >
+              <ListItem button key={i} onClick={() => { navigate(link.path); setDrawerOpen(false); }}>
                 <ListItemIcon>{link.icon}</ListItemIcon>
                 <ListItemText primary={link.name} />
               </ListItem>
@@ -429,30 +414,16 @@ export default function Navbar() {
 
             {/* Login */}
             {!isLoggedIn && (
-              <ListItem
-                button
-                onClick={() => {
-                  navigate("/login");
-                  setDrawerOpen(false);
-                }}
-              >
+              <ListItem button onClick={() => { navigate("/login"); setDrawerOpen(false); }}>
                 <ListItemIcon><FaUserCircle /></ListItemIcon>
                 <ListItemText primary="Signup / Login" />
               </ListItem>
             )}
 
-            {/* Audio Button */}
-            <ListItem
-              button
-              onClick={() => {
-                toggleAudio();
-                setDrawerOpen(false);
-              }}
-            >
+            {/* Audio */}
+            <ListItem button onClick={() => { toggleAudio(); setDrawerOpen(false); }}>
               <ListItemIcon>{isPlaying ? <FaPause /> : <FaPlay />}</ListItemIcon>
-              <ListItemText
-                primary={isPlaying ? "Pause Vandana" : "Play Vandana"}
-              />
+              <ListItemText primary={isPlaying ? "Pause Vandana" : "Play Vandana"} />
             </ListItem>
 
             {/* Profile Links */}
@@ -467,52 +438,22 @@ export default function Navbar() {
                 <Collapse in={profileMenuOpen}>
                   <List component="div" disablePadding>
                     {profileLinks.map((link) => (
-                      <ListItem
-                        button
-                        key={link.name}
-                        sx={{ pl: 4 }}
-                        onClick={() => {
-                          navigate(link.path);
-                          setDrawerOpen(false);
-                        }}
-                      >
+                      <ListItem button key={link.name} sx={{ pl: 4 }} onClick={() => { navigate(link.path); setDrawerOpen(false); }}>
                         <ListItemText primary={link.name} />
                       </ListItem>
                     ))}
                     {otherLinks.map((link) => (
-                      <ListItem
-                        button
-                        key={link.name}
-                        sx={{ pl: 4 }}
-                        onClick={() => {
-                          navigate(link.path);
-                          setDrawerOpen(false);
-                        }}
-                      >
+                      <ListItem button key={link.name} sx={{ pl: 4 }} onClick={() => { navigate(link.path); setDrawerOpen(false); }}>
                         {link.icon && <ListItemIcon>{link.icon}</ListItemIcon>}
                         <ListItemText primary={link.name} />
                       </ListItem>
                     ))}
                     {userProfile?.role === "admin" && (
-                      <ListItem
-                        button
-                        sx={{ pl: 4 }}
-                        onClick={() => {
-                          navigate("/admin");
-                          setDrawerOpen(false);
-                        }}
-                      >
+                      <ListItem button sx={{ pl: 4 }} onClick={() => { navigate("/admin"); setDrawerOpen(false); }}>
                         <ListItemText primary="Admin Dashboard" />
                       </ListItem>
                     )}
-                    <ListItem
-                      button
-                      sx={{ pl: 4, color: "red" }}
-                      onClick={() => {
-                        handleLogout();
-                        setDrawerOpen(false);
-                      }}
-                    >
+                    <ListItem button sx={{ pl: 4, color: "red" }} onClick={() => { handleLogout(); setDrawerOpen(false); }}>
                       <ListItemText primary="Logout" />
                     </ListItem>
                   </List>
@@ -523,7 +464,7 @@ export default function Navbar() {
         </Box>
       </Drawer>
 
-      {/* 📊 Search Results */}
+      {/* Search Results */}
       {searchResults.length > 0 && (
         <Container sx={{ py: 5 }}>
           <Typography variant="h5" mb={3} sx={{ color: "#fbbf24" }}>
@@ -540,9 +481,7 @@ export default function Navbar() {
                     cursor: "pointer",
                     "&:hover": { boxShadow: 6 },
                   }}
-                  onClick={() =>
-                    navigate(`/${item.type.toLowerCase()}/${item._id}`)
-                  }
+                  onClick={() => navigate(`/${item.type.toLowerCase()}/${item._id}`)}
                 >
                   <img
                     src={item.image || "/placeholder.png"}
@@ -554,9 +493,7 @@ export default function Navbar() {
                     <Typography variant="body2" color="text.secondary">
                       Type: {item.type}
                     </Typography>
-                    {item.price && (
-                      <Typography fontWeight="bold">₹{item.price}</Typography>
-                    )}
+                    {item.price && <Typography fontWeight="bold">₹{item.price}</Typography>}
                   </Box>
                 </Paper>
               </Grid>
