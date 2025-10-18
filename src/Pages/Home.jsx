@@ -15,10 +15,17 @@ import {
   IconButton,
   useMediaQuery,
   Slide,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
 } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
+import SearchIcon from "@mui/icons-material/Search";
 import { useTheme } from "@mui/material/styles";
 import { FaTruckMoving, FaBroom, FaCheckCircle, FaCalendarAlt } from "react-icons/fa";
-import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
 import Loader from "../Component/Loader";
 import LiveDarshan from "../Component/Livedareshan";
@@ -33,8 +40,6 @@ import murtiidol from "../Component/Images/murti-&-Idol.jpg";
 import decoration from "../Component/Images/decoration.jpg";
 import garbadress from "../Component/Images/garba-dress.jpg";
 import event from "../Component/Images/event.jpg";
-
-const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
 const services = [
   { title: "Room Shifting", desc: "Local & Intercity moving with care.", img: "/images/room-shifting.jpg" },
@@ -70,14 +75,17 @@ const sliderSettings = {
 
 export default function Home() {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
   const audioRef = useRef(null);
 
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+
+  const navLinks = ["Home", "Services", "Pricing", "About Us", "Blog", "Contact"];
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 2000);
@@ -112,20 +120,60 @@ export default function Home() {
   ];
 
   return (
-    <Box sx={{ bgcolor: "#f3f4f6", minHeight: "100vh", fontFamily: "'Mukta', sans-serif" }}>
+    <Box sx={{ bgcolor: "#000000", minHeight: "100vh", fontFamily: "'Mukta', sans-serif" }}>
       <audio ref={audioRef} src="/diwali-bgm.mp3" loop autoPlay />
 
       {/* ===================== NAVBAR ===================== */}
-      <AppBar position="sticky" color="transparent" elevation={0}>
+      <AppBar position="sticky" color="default" elevation={2} sx={{ bgcolor: "#fff" }}>
         <Toolbar sx={{ justifyContent: "space-between" }}>
-          <Stack direction="row" spacing={2} sx={{ display: { xs: "none", md: "flex" } }}>
-            {["Home", "Services", "Pricing", "About Us", "Blog", "Contact"].map((link) => (
-              <Button key={link} color="inherit">{link}</Button>
-            ))}
-            <Button variant="contained" color="secondary">Book Now</Button>
-          </Stack>
+          <Typography variant="h6" sx={{ fontWeight: "bold", color: "#ef4444" }}>
+            Utsav-Aura
+          </Typography>
+
+          {/* Desktop Menu */}
+          {!isMobile && (
+            <Stack direction="row" spacing={2}>
+              {navLinks.map((link) => (
+                <Button key={link} color="inherit">{link}</Button>
+              ))}
+              <Button variant="contained" color="secondary">Book Now</Button>
+            </Stack>
+          )}
+
+          {/* Mobile Hamburger */}
+          {isMobile && (
+            <IconButton onClick={() => setDrawerOpen(true)}>
+              <MenuIcon />
+            </IconButton>
+          )}
         </Toolbar>
       </AppBar>
+
+      {/* ===================== DRAWER ===================== */}
+      <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+        <Box sx={{ width: 250, p: 2 }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <Typography variant="h6" sx={{ fontWeight: "bold" }}>Menu</Typography>
+            <IconButton onClick={() => setDrawerOpen(false)}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <List>
+            {navLinks.map((text) => (
+              <ListItem key={text} disablePadding>
+                <ListItemButton onClick={() => setDrawerOpen(false)}>
+                  <ListItemText primary={text} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+            <ListItem disablePadding>
+              <ListItemButton>
+                <Button fullWidth variant="contained" color="secondary">Book Now</Button>
+              </ListItemButton>
+            </ListItem>
+          </List>
+        </Box>
+      </Drawer>
 
       {/* ===================== SEARCH BAR ===================== */}
       <Box
@@ -135,13 +183,11 @@ export default function Home() {
           alignItems: "center",
           py: isMobile ? 2 : 3,
           px: 2,
-          bgcolor: "#000000",
+          bgcolor: "#f3f4f6",
           borderBottom: "2px solid #f59e0b",
           position: "sticky",
-          top: 0,
-          zIndex: 10,
-          borderRadius: 2,
-          boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
+          top: 64,
+          zIndex: 100,
         }}
       >
         <TextField
@@ -163,16 +209,16 @@ export default function Home() {
         </IconButton>
       </Box>
 
-      {/* ===================== SLIDER / HERO SECTION ===================== */}
+      {/* ===================== HERO / SLIDER ===================== */}
       <Slider />
 
-      {/* ===================== SHOP BY CATEGORY ===================== */}
+      {/* ===================== CATEGORY ===================== */}
       <Container maxWidth="xl" sx={{ mt: 6 }}>
         <Typography
           variant="h4"
           fontWeight="bold"
           mb={3}
-          sx={{ color: "#f59e0b", textAlign: "center", letterSpacing: 1 }}
+          sx={{ color: "#f59e0b", textAlign: "center" }}
         >
           Shop by Category
         </Typography>
@@ -184,7 +230,6 @@ export default function Home() {
             px: 1,
             gap: 3,
             "&::-webkit-scrollbar": { display: "none" },
-            scrollbarWidth: "none",
           }}
         >
           {categories.map((cat) => (
@@ -216,7 +261,7 @@ export default function Home() {
         </Box>
       </Container>
 
-      {/* ===================== CATEGORY OF SERVICES (REPLACED OUR SERVICES) ===================== */}
+      {/* ===================== SERVICES ===================== */}
       <Container sx={{ py: 6 }}>
         <Typography variant="h4" fontWeight="bold" mb={4} textAlign="center" sx={{ color: "#ef4444" }}>
           Category of Services
@@ -307,22 +352,6 @@ export default function Home() {
             </Grid>
           ))}
         </Grid>
-      </Container>
-
-      {/* ===================== TESTIMONIALS ===================== */}
-      <Container sx={{ py: 6, bgcolor: "#f9fafb" }}>
-        <Typography variant="h4" fontWeight="bold" mb={4} textAlign="center">
-          What Our Customers Say
-        </Typography>
-        <Slider {...sliderSettings}>
-          {reviews.map((r) => (
-            <Paper key={r.name} sx={{ p: 3, borderRadius: 3, textAlign: "center", mx: 1, boxShadow: 2 }}>
-              <Avatar src={r.photo} sx={{ width: 56, height: 56, mx: "auto", mb: 2 }} />
-              <Typography variant="body1" mb={1}>"{r.comment}"</Typography>
-              <Typography variant="subtitle2" fontWeight="bold">{r.name}</Typography>
-            </Paper>
-          ))}
-        </Slider>
       </Container>
     </Box>
   );
