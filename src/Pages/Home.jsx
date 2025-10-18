@@ -32,11 +32,6 @@ import ProductGallery from "../Component/UserPackageViewPage";
 import DecorationGallery from "../Component/DecorationGallery";
 import { getLoggedInUser } from "../utils/auth";
 
-// Slider imports (important!)
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-
 // Images
 import murtiidol from "../Component/Images/murti-&-Idol.jpg";
 import decoration from "../Component/Images/decoration.jpg";
@@ -66,19 +61,6 @@ const advantages = [
   { title: "Safe Handling", desc: "Your belongings handled with care & safety.", icon: FaTruckMoving },
   { title: "Flexible Scheduling", desc: "Book services anytime, anywhere.", icon: FaBroom },
 ];
-
-// Slider settings
-const sliderSettings = {
-  dots: true,
-  infinite: true,
-  speed: 600,
-  slidesToShow: 3,
-  slidesToScroll: 1,
-  responsive: [
-    { breakpoint: 960, settings: { slidesToShow: 2 } },
-    { breakpoint: 600, settings: { slidesToShow: 1 } },
-  ],
-};
 
 export default function Home() {
   const theme = useTheme();
@@ -256,29 +238,29 @@ export default function Home() {
         <Typography variant="h4" fontWeight="bold" mb={4} textAlign="center">
           Our Services
         </Typography>
-        <Slider {...sliderSettings}>
+        <Grid container spacing={3}>
           {services.map((service) => (
-            <Paper
-              key={service.title}
-              sx={{
-                p: 2,
-                borderRadius: 3,
-                textAlign: "center",
-                mx: 1,
-                '&:hover': { transform: 'scale(1.05)', boxShadow: 6 },
-              }}
-            >
-              <img
-                src={service.img}
-                alt={service.title}
-                style={{ width: "100%", borderRadius: 12, height: 180, objectFit: "cover" }}
-              />
-              <Typography variant="h6" mt={2}>{service.title}</Typography>
-              <Typography variant="body2">{service.desc}</Typography>
-              <Button variant="contained" color="primary" sx={{ mt: 2 }}>Book Now</Button>
-            </Paper>
+            <Grid item xs={12} sm={6} md={3} key={service.title}>
+              <Paper
+                sx={{
+                  p: 2,
+                  borderRadius: 3,
+                  textAlign: "center",
+                  '&:hover': { transform: 'scale(1.05)', boxShadow: 6 },
+                }}
+              >
+                <img
+                  src={service.img}
+                  alt={service.title}
+                  style={{ width: "100%", borderRadius: 12, height: 180, objectFit: "cover" }}
+                />
+                <Typography variant="h6" mt={2}>{service.title}</Typography>
+                <Typography variant="body2">{service.desc}</Typography>
+                <Button variant="contained" color="primary" sx={{ mt: 2 }}>Book Now</Button>
+              </Paper>
+            </Grid>
           ))}
-        </Slider>
+        </Grid>
       </Container>
 
       {/* Categories */}
@@ -381,15 +363,17 @@ export default function Home() {
         <Typography variant="h4" fontWeight="bold" mb={4} textAlign="center">
           What Our Customers Say
         </Typography>
-        <Slider {...sliderSettings}>
+        <Grid container spacing={3}>
           {reviews.map((r) => (
-            <Paper key={r.name} sx={{ p: 3, borderRadius: 3, textAlign: "center", mx: 1, boxShadow: 2 }}>
-              <Avatar src={r.photo} sx={{ width: 56, height: 56, mx: "auto", mb: 2 }} />
-              <Typography variant="body1" mb={1}>"{r.comment}"</Typography>
-              <Typography variant="subtitle2" fontWeight="bold">{r.name}</Typography>
-            </Paper>
+            <Grid item xs={12} sm={6} md={4} key={r.name}>
+              <Paper sx={{ p: 3, borderRadius: 3, textAlign: "center", boxShadow: 2 }}>
+                <Avatar src={r.photo} sx={{ width: 56, height: 56, mx: "auto", mb: 2 }} />
+                <Typography variant="body1" mb={1}>"{r.comment}"</Typography>
+                <Typography variant="subtitle2" fontWeight="bold">{r.name}</Typography>
+              </Paper>
+            </Grid>
           ))}
-        </Slider>
+        </Grid>
       </Container>
 
       {/* Floating Help Center Button */}
@@ -417,25 +401,14 @@ export default function Home() {
         TransitionComponent={Transition}
         keepMounted
         onClose={() => setHelpOpen(false)}
-        sx={{
-          "& .MuiDialog-paper": {
-            borderRadius: 3,
-            width: isMobile ? "90%" : 400,
-            position: "fixed",
-            bottom: 24,
-            right: 24,
-            m: 0,
-          },
-        }}
+        sx={{ "& .MuiDialog-paper": { borderRadius: 3, width: isMobile ? "90%" : 400, position: "fixed", bottom: 24, right: 24, m: 0 } }}
       >
         <DialogTitle>Help Center</DialogTitle>
         <DialogContent dividers>
           <Typography>Hi there! Need assistance? Chat with us or call at 123-456-7890.</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setHelpOpen(false)} color="primary">
-            Close
-          </Button>
+          <Button onClick={() => setHelpOpen(false)} color="primary">Close</Button>
         </DialogActions>
       </Dialog>
     </Box>
