@@ -36,32 +36,29 @@ import {
   FaPlay,
 } from "react-icons/fa";
 import { CiUser } from "react-icons/ci";
-import {
-  AccountCircle,
-  ShoppingCart,
-  Home,
-  Search,
-} from "@mui/icons-material";
+import { AccountCircle, ShoppingCart, Home, Search } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import utsavLogo from "./Images/utsavlogo.png";
 
 export default function Navbar() {
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  const isLoggedIn = !!token;
+
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [profileAnchor, setProfileAnchor] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
-  const [currentNameIndex, setCurrentNameIndex] = useState(0);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [audio] = useState(new Audio("/ganesh-vandana.mp3"));
   const [drawerSearchOpen, setDrawerSearchOpen] = useState(false);
 
-  const navigate = useNavigate();
-  const token = localStorage.getItem("token");
-  const isLoggedIn = !!token;
+  const [currentNameIndex, setCurrentNameIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [audio] = useState(new Audio("/ganesh-vandana.mp3"));
 
   const colors = {
     bg: "#1e293b",
@@ -70,12 +67,12 @@ export default function Navbar() {
     hover: "#fbbf24",
   };
 
-  // Rotating Ganesh names
   const ganeshNames = [
     "गणपति", "विनायक", "विघ्नहर्ता", "सिद्धिविनायक", "लम्बोदर",
     "गजानन", "वक्रतुंड", "धूम्रवर्ण", "एकदंत", "कपिल",
     "वक्रतुंड महाकाय", "मंगलमूर्ति",
   ];
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentNameIndex((prev) => (prev + 1) % ganeshNames.length);
@@ -83,14 +80,14 @@ export default function Navbar() {
     return () => clearInterval(interval);
   }, []);
 
-  // Audio toggle
+  // Audio Toggle
   const toggleAudio = () => {
     if (isPlaying) audio.pause();
     else audio.play();
     setIsPlaying(!isPlaying);
   };
 
-  // Profile fetch
+  // Fetch Profile
   useEffect(() => {
     const fetchProfile = async () => {
       if (!token) return;
@@ -115,7 +112,7 @@ export default function Navbar() {
     toast.success("Logged out successfully!");
   };
 
-  // Search handler
+  // 🔍 Search Function
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
     try {
@@ -125,7 +122,7 @@ export default function Navbar() {
       const data = await res.json();
       if (data.success) {
         setSearchResults(data.results);
-        setDrawerOpen(false); // close drawer on search
+        setDrawerOpen(false);
       } else {
         setSearchResults([]);
       }
@@ -156,7 +153,7 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Navbar */}
+      {/* 🌟 NAVBAR */}
       <AppBar
         position="sticky"
         sx={{
@@ -174,7 +171,7 @@ export default function Navbar() {
             justifyContent: "space-between",
           }}
         >
-          {/* Logo */}
+          {/* 🪔 Logo */}
           <Box
             component="img"
             src={utsavLogo}
@@ -193,7 +190,7 @@ export default function Navbar() {
             onClick={() => navigate("/")}
           />
 
-          {/* Ganesh Names */}
+          {/* 🙏 Rotating Names */}
           <Typography
             variant="h6"
             fontWeight="bold"
@@ -202,9 +199,9 @@ export default function Navbar() {
             {ganeshNames[currentNameIndex]}
           </Typography>
 
-          {/* Right Side */}
+          {/* 📱 Right Icons */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            {/* Cart always visible on desktop */}
+            {/* Cart (Desktop) */}
             <IconButton
               sx={{ color: colors.text, display: { xs: "none", md: "flex" } }}
               onClick={() => navigate("/cart")}
@@ -212,7 +209,7 @@ export default function Navbar() {
               <ShoppingCart />
             </IconButton>
 
-            {/* Hamburger (Mobile Only) */}
+            {/* Hamburger (Mobile) */}
             <IconButton
               edge="end"
               sx={{ color: colors.primary, display: { xs: "flex", md: "none" } }}
@@ -222,7 +219,7 @@ export default function Navbar() {
             </IconButton>
           </Box>
 
-          {/* Desktop Only Items */}
+          {/* 🖥 Desktop Only */}
           <Box
             sx={{
               display: { xs: "none", md: "flex" },
@@ -231,7 +228,7 @@ export default function Navbar() {
               ml: 2,
             }}
           >
-            {/* Home Button */}
+            {/* Home */}
             <Button
               startIcon={<Home />}
               sx={{ color: colors.text }}
@@ -240,7 +237,7 @@ export default function Navbar() {
               Home
             </Button>
 
-            {/* Search Bar */}
+            {/* 🔍 Search */}
             <TextField
               placeholder="Search..."
               size="small"
@@ -255,7 +252,7 @@ export default function Navbar() {
               }}
             />
 
-            {/* Signup/Login or Profile */}
+            {/* 👤 Profile / Login */}
             {!isLoggedIn ? (
               <Button
                 variant="outlined"
@@ -326,7 +323,7 @@ export default function Navbar() {
               </>
             )}
 
-            {/* Audio Button */}
+            {/* 🪔 Audio */}
             <Button
               onClick={toggleAudio}
               startIcon={isPlaying ? <FaPause /> : <FaPlay />}
@@ -347,14 +344,9 @@ export default function Navbar() {
         </Toolbar>
       </AppBar>
 
-      {/* Drawer (Mobile Menu) */}
-      <Drawer
-        anchor="right"
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-      >
+      {/* 📱 Drawer (Mobile Menu) */}
+      <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
         <Box sx={{ width: 280 }}>
-          {/* Drawer Header */}
           <Box
             sx={{
               display: "flex",
@@ -371,7 +363,7 @@ export default function Navbar() {
           </Box>
 
           <List>
-            {/* Home Option */}
+            {/* Home */}
             <ListItem
               button
               onClick={() => {
@@ -379,20 +371,13 @@ export default function Navbar() {
                 setDrawerOpen(false);
               }}
             >
-              <ListItemIcon>
-                <Home />
-              </ListItemIcon>
+              <ListItemIcon><Home /></ListItemIcon>
               <ListItemText primary="Home" />
             </ListItem>
 
-            {/* Search Option */}
-            <ListItem
-              button
-              onClick={() => setDrawerSearchOpen(!drawerSearchOpen)}
-            >
-              <ListItemIcon>
-                <Search />
-              </ListItemIcon>
+            {/* Search */}
+            <ListItem button onClick={() => setDrawerSearchOpen(!drawerSearchOpen)}>
+              <ListItemIcon><Search /></ListItemIcon>
               <ListItemText primary="Search" />
               {drawerSearchOpen ? <MdExpandLess /> : <MdExpandMore />}
             </ListItem>
@@ -418,7 +403,7 @@ export default function Navbar() {
               </Box>
             </Collapse>
 
-            {/* Cart Option in Drawer (Mobile only) */}
+            {/* Cart */}
             <ListItem
               button
               onClick={() => {
@@ -426,13 +411,11 @@ export default function Navbar() {
                 setDrawerOpen(false);
               }}
             >
-              <ListItemIcon>
-                <ShoppingCart />
-              </ListItemIcon>
+              <ListItemIcon><ShoppingCart /></ListItemIcon>
               <ListItemText primary="My Cart" />
             </ListItem>
 
-            {/* About + Contact */}
+            {/* Links */}
             {links.map((link, i) => (
               <ListItem
                 button
@@ -447,7 +430,7 @@ export default function Navbar() {
               </ListItem>
             ))}
 
-            {/* Signup/Login */}
+            {/* Login */}
             {!isLoggedIn && (
               <ListItem
                 button
@@ -456,14 +439,12 @@ export default function Navbar() {
                   setDrawerOpen(false);
                 }}
               >
-                <ListItemIcon>
-                  <FaUserCircle />
-                </ListItemIcon>
+                <ListItemIcon><FaUserCircle /></ListItemIcon>
                 <ListItemText primary="Signup / Login" />
               </ListItem>
             )}
 
-            {/* Audio Button in Drawer */}
+            {/* Audio Button */}
             <ListItem
               button
               onClick={() => {
@@ -471,25 +452,18 @@ export default function Navbar() {
                 setDrawerOpen(false);
               }}
             >
-              <ListItemIcon>
-                {isPlaying ? <FaPause /> : <FaPlay />}
-              </ListItemIcon>
+              <ListItemIcon>{isPlaying ? <FaPause /> : <FaPlay />}</ListItemIcon>
               <ListItemText
                 primary={isPlaying ? "Pause Vandana" : "Play Vandana"}
               />
             </ListItem>
 
-            {/* Profile Links in Drawer */}
+            {/* Profile Links */}
             {isLoggedIn && userProfile && (
               <>
                 <Divider />
-                <ListItem
-                  button
-                  onClick={() => setProfileMenuOpen(!profileMenuOpen)}
-                >
-                  <ListItemIcon>
-                    <FaUserCircle />
-                  </ListItemIcon>
+                <ListItem button onClick={() => setProfileMenuOpen(!profileMenuOpen)}>
+                  <ListItemIcon><FaUserCircle /></ListItemIcon>
                   <ListItemText primary={userProfile?.name || "Profile"} />
                   {profileMenuOpen ? <MdExpandLess /> : <MdExpandMore />}
                 </ListItem>
@@ -518,9 +492,7 @@ export default function Navbar() {
                           setDrawerOpen(false);
                         }}
                       >
-                        {link.icon && (
-                          <ListItemIcon>{link.icon}</ListItemIcon>
-                        )}
+                        {link.icon && <ListItemIcon>{link.icon}</ListItemIcon>}
                         <ListItemText primary={link.name} />
                       </ListItem>
                     ))}
@@ -554,7 +526,7 @@ export default function Navbar() {
         </Box>
       </Drawer>
 
-      {/* Search Results */}
+      {/* 📊 Search Results */}
       {searchResults.length > 0 && (
         <Container sx={{ py: 5 }}>
           <Typography variant="h5" mb={3} sx={{ color: "#fbbf24" }}>
