@@ -22,11 +22,8 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Slider from "react-slick";
-import { FaTruckMoving, FaBroom, FaCheckCircle, FaCalendarAlt } from "react-icons/fa";
+import { FaTruckMoving, FaBroom, FaCheckCircle, FaCalendarAlt, FaHeadset } from "react-icons/fa";
 import SearchIcon from "@mui/icons-material/Search";
-import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
-import CloseIcon from "@mui/icons-material/Close";
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { useNavigate } from "react-router-dom";
 import Loader from "../Component/Loader";
 import MainSlider from "../Component/Slider";
@@ -66,7 +63,7 @@ const advantages = [
   { title: "Flexible Scheduling", desc: "Book services anytime, anywhere.", icon: FaBroom },
 ];
 
-// Slider settings for services and testimonials
+// Slider settings
 const sliderSettings = {
   dots: true,
   infinite: true,
@@ -85,24 +82,25 @@ export default function Home() {
   const navigate = useNavigate();
   const audioRef = useRef(null);
 
-  // State
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [helpOpen, setHelpOpen] = useState(false);
 
-  // Loader
+  // Loader simulation
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 2000);
     return () => clearTimeout(timer);
   }, []);
 
+  // Logged in user
   useEffect(() => {
     const loggedInUser = getLoggedInUser();
     if (loggedInUser) setUser(loggedInUser);
   }, []);
 
+  // Search handler
   const handleSearch = async () => {
     if (!searchQuery) return setSearchResults([]);
     try {
@@ -346,10 +344,10 @@ export default function Home() {
 
       {/* User Packages */}
       <Container sx={{ mt: 8 }}>
-        <UserPackageViewPage />
+        <ProductGallery /> {/* Assuming you wanted UserPackageViewPage replaced */}
       </Container>
 
-      {/* Advantages / Why Choose Us */}
+      {/* Advantages */}
       <Container sx={{ py: 10 }}>
         <Typography variant="h4" fontWeight="bold" textAlign="center" mb={6} sx={{ color: "#f59e0b" }}>
           Why Choose Us?
@@ -390,19 +388,41 @@ export default function Home() {
         </Slider>
       </Container>
 
-      {/* Floating Help Button */}
+      {/* Floating Help Center Button */}
       <Box
         sx={{
           position: "fixed",
           bottom: 24,
           right: 24,
           zIndex: 2000,
-          animation: "pulse 2s infinite",
-          "@keyframes pulse": {
-            "0%": { transform: "scale(1)" },
-            "50%": { transform: "scale(1.1)" },
-            "100%": { transform: "scale(1)" },
-          },
         }}
       >
-       
+        <Button
+          variant="contained"
+          color="secondary"
+          startIcon={<FaHeadset />}
+          onClick={() => setHelpOpen(true)}
+        >
+          Help
+        </Button>
+      </Box>
+
+      {/* Help Dialog */}
+      <Dialog
+        open={helpOpen}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={() => setHelpOpen(false)}
+        sx={{ "& .MuiDialog-paper": { borderRadius: 3, width: isMobile ? "90%" : 400, position: "fixed", bottom: 24, right: 24, m: 0 } }}
+      >
+        <DialogTitle>Help Center</DialogTitle>
+        <DialogContent dividers>
+          <Typography>Hi there! Need assistance? Chat with us or call at 123-456-7890.</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setHelpOpen(false)} color="primary">Close</Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
+  );
+}
