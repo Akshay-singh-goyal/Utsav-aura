@@ -14,7 +14,7 @@ import {
 } from "react-icons/fa";
 
 const services = [
-  { title: "Room / Home Shifting", icon: FaTruckMoving },
+  { title: "Room / Home Shifting", icon: FaTruckMoving, path: "/roomshifting" },
   { title: "Home Decoration", icon: FaPalette },
   { title: "Shop Decoration", icon: FaStore },
   { title: "House Cleaning", icon: FaBroom },
@@ -23,7 +23,7 @@ const services = [
   { title: "Catering / Food Services", icon: FaUtensils },
   { title: "Lighting / Rangoli Setup", icon: FaLightbulb },
   { title: "Event Photography", icon: FaCamera },
-  { title: "Gift Packs / Hampers", icon: FaGift },
+  { title: "Gift Packs / Hampers", icon: FaGift, path: "/roomshifting" },
 ];
 
 export default function ServicesSection() {
