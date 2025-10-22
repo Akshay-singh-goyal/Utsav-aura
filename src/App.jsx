@@ -29,7 +29,7 @@ import DecorationGallery from "./Component/DecorationGallery";
 import DecorationDetail from "./Pages/DecorationDetail";
 import UserChat from "./Component/UserChat";
 import ServicesSection from "./Component/ServicesSection";
-import RoomShiftingPage from "./Component /RoomShiftingPage";
+import RoomShiftingPage from "./Component/RoomShiftingPage";
 
 // Admin Pages
 import Dashboard from "./Pages/Dashboard";
