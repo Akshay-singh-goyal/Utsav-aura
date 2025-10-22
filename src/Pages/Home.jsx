@@ -28,7 +28,8 @@ import Loader from "../Component/Loader";
 import MainSlider from "../Component/Slider";
 import LiveDarshan from "../Component/Livedareshan";
 import LiveHistory from "./LiveHistory";
-import ProductGallery from "../Component/UserPackageViewPage";
+import UserPackageViewPage from "../Component/UserPackageViewPage";
+Import ProductGallery from "../Component/ProductGallery";
 import DecorationGallery from "../Component/DecorationGallery";
 import { getLoggedInUser } from "../utils/auth";
 
@@ -330,7 +331,7 @@ export default function Home() {
 
       {/* User Packages */}
       <Container sx={{ mt: 8 }}>
-        <ProductGallery />
+        <UserPackageViewPage />
       </Container>
 
       {/* Advantages */}
