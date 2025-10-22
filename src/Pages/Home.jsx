@@ -36,7 +36,7 @@ import ProductGallery from "../Component/ProductGallery";
 import DecorationGallery from "../Component/DecorationGallery";
 import { getLoggedInUser } from "../utils/auth";
 
-// Images
+// Local images
 import murtiidol from "../Component/Images/murti-&-Idol.jpg";
 import decoration from "../Component/Images/decoration.jpg";
 import garbadress from "../Component/Images/garba-dress.jpg";
@@ -138,6 +138,45 @@ export default function Home() {
     >
       <audio ref={audioRef} src="/diwali-bgm.mp3" loop autoPlay />
 
+      {/* 🖼️ SLIDER SECTION ABOVE HERO */}
+      <Box
+        sx={{
+          width: "100%",
+          overflow: "hidden",
+          position: "relative",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            width: "300%",
+            animation: "slide 15s infinite",
+            "@keyframes slide": {
+              "0%": { transform: "translateX(0)" },
+              "33%": { transform: "translateX(-100%)" },
+              "66%": { transform: "translateX(-200%)" },
+              "100%": { transform: "translateX(0)" },
+            },
+          }}
+        >
+          {["/images/slide1.jpg", "/images/slide2.jpg", "/images/slide3.jpg"].map(
+            (img, i) => (
+              <Box key={i} sx={{ width: "100%", height: "50vh" }}>
+                <img
+                  src={img}
+                  alt={`Slide ${i}`}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                />
+              </Box>
+            )
+          )}
+        </Box>
+      </Box>
+
       {/* 🌟 HERO SECTION */}
       <Box
         sx={{
@@ -167,7 +206,7 @@ export default function Home() {
         <Typography
           variant={isMobile ? "body1" : "h5"}
           mb={4}
-          sx={{ opacity: 0.95 }}
+          sx={{ color: "#ffe8a1", fontWeight: 500 }} // 🌟 Changed font color
         >
           From divine décor to live darshans — experience devotion and festivity together.
         </Typography>
@@ -217,7 +256,7 @@ export default function Home() {
         </Paper>
       </Container>
 
-      {/* 🛍 SHOP BY CATEGORY (Circular Cards) */}
+      {/* 🛍 SHOP BY CATEGORY */}
       <Container sx={{ mt: 4 }}>
         <Typography
           variant="h4"
@@ -227,57 +266,68 @@ export default function Home() {
         >
           Shop by Category
         </Typography>
-        <Grid container spacing={3} justifyContent="center">
+
+        {/* 🌸 Horizontal scroll on mobile */}
+        <Box
+          sx={{
+            display: "flex",
+            overflowX: isMobile ? "auto" : "visible",
+            gap: 3,
+            pb: isMobile ? 2 : 0,
+            justifyContent: "center",
+            scrollBehavior: "smooth",
+          }}
+        >
           {[
             { title: "Murti & Idols", img: murtiidol, path: "/murtis" },
             { title: "Decorations", img: decoration, path: "/decorations" },
             { title: "Event Booking", img: event, path: "/events" },
             { title: "Garba Dresses", img: garbadress, path: "/dresses" },
           ].map((cat) => (
-            <Grid item xs={6} sm={3} key={cat.title}>
+            <Box
+              key={cat.title}
+              sx={{
+                textAlign: "center",
+                cursor: "pointer",
+                transition: "0.3s",
+                minWidth: isMobile ? "150px" : "auto",
+                "&:hover": { transform: "scale(1.05)" },
+              }}
+              onClick={() => navigate(cat.path)}
+            >
               <Box
                 sx={{
-                  textAlign: "center",
-                  cursor: "pointer",
-                  transition: "0.3s",
-                  "&:hover": { transform: "scale(1.05)" },
+                  width: 150,
+                  height: 150,
+                  borderRadius: "50%",
+                  overflow: "hidden",
+                  mx: "auto",
+                  boxShadow: "0 6px 15px rgba(0,0,0,0.2)",
+                  border: "4px solid #ffe0b2",
                 }}
-                onClick={() => navigate(cat.path)}
               >
-                <Box
-                  sx={{
-                    width: 150,
-                    height: 150,
+                <img
+                  src={cat.img}
+                  alt={cat.title}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
                     borderRadius: "50%",
-                    overflow: "hidden",
-                    mx: "auto",
-                    boxShadow: "0 6px 15px rgba(0,0,0,0.2)",
-                    border: "4px solid #ffe0b2",
                   }}
-                >
-                  <img
-                    src={cat.img}
-                    alt={cat.title}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      borderRadius: "50%",
-                    }}
-                  />
-                </Box>
-                <Typography
-                  variant="subtitle1"
-                  fontWeight="bold"
-                  mt={2}
-                  sx={{ color: "#b45309" }}
-                >
-                  {cat.title}
-                </Typography>
+                />
               </Box>
-            </Grid>
+              <Typography
+                variant="subtitle1"
+                fontWeight="bold"
+                mt={2}
+                sx={{ color: "#b45309" }}
+              >
+                {cat.title}
+              </Typography>
+            </Box>
           ))}
-        </Grid>
+        </Box>
       </Container>
 
       {/* 🌟 Featured Products */}
@@ -378,12 +428,7 @@ export default function Home() {
 
       {/* 💬 Customer Testimonials */}
       <Container sx={{ py: 6, bgcolor: "#f9fafb" }}>
-        <Typography
-          variant="h4"
-          fontWeight="bold"
-          mb={4}
-          textAlign="center"
-        >
+        <Typography variant="h4" fontWeight="bold" mb={4} textAlign="center">
           What Our Customers Say
         </Typography>
         <Grid container spacing={3}>
