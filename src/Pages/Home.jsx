@@ -97,20 +97,6 @@ export default function Home() {
   return (
     <Box sx={{ bgcolor: "#f3f4f6", minHeight: "100vh", fontFamily: "'Mukta', sans-serif" }}>
       <audio ref={audioRef} src="/diwali-bgm.mp3" loop autoPlay />
-
-      {/* Navbar */}
-      <AppBar position="sticky" color="transparent" elevation={0}>
-        <Toolbar sx={{ justifyContent: "space-between" }}>
-          <Box component="img" src="/images/logo.png" alt="Logo" height={50} />
-          <Stack direction="row" spacing={2} sx={{ display: { xs: "none", md: "flex" } }}>
-            {["Home", "Pricing", "About Us", "Blog", "Contact"].map((link) => (
-              <Button key={link} color="inherit">{link}</Button>
-            ))}
-            <Button variant="contained" color="secondary">Book Now</Button>
-          </Stack>
-        </Toolbar>
-      </AppBar>
-
       {/* Hero Section */}
       <Box
         sx={{
@@ -213,24 +199,24 @@ export default function Home() {
       )}
 
       {/* 🛍 Shop by Category (Round Shape Cards) */}
-      <Container maxWidth="xl" sx={{ mt: 6 }}>
-        <Typography variant="h4" fontWeight="bold" mb={3} sx={{ color: "#f59e0b", textAlign: "center" }}>
+      <Container maxWidth="x" sx={{ mt: 3 }}>
+        <Typography variant="h3" fontWeight="bold" mb={1} sx={{ color: "#f59e0b", textAlign: "center" }}>
           Shop by Category
         </Typography>
-        <Grid container spacing={4} justifyContent="center">
+        <Grid container spacing={2} justifyContent="center">
           {[{ title: "Murti & Idols", img: murtiidol, path: "/murtis" },
             { title: "Decorations", img: decoration, path: "/decorations" },
             { title: "Event Booking", img: event, path: "/events" },
             { title: "Garba Dresses", img: garbadress, path: "/dresses" }].map((cat) => (
-            <Grid item xs={6} sm={3} key={cat.title}>
+            <Grid item xs={4} sm={3} key={cat.title}>
               <Paper
                 elevation={6}
                 sx={{
                   p: 2,
                   textAlign: "center",
                   borderRadius: "50%",
-                  width: 180,
-                  height: 180,
+                  width: 120,
+                  height: 120,
                   mx: "auto",
                   background: "linear-gradient(145deg, #fff3e0, #ffe0b2)",
                   transition: "0.3s",
