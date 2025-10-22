@@ -29,6 +29,7 @@ import DecorationGallery from "./Component/DecorationGallery";
 import DecorationDetail from "./Pages/DecorationDetail";
 import UserChat from "./Component/UserChat";
 import ServicesSection from "./Component/ServicesSection";
+import RoomShiftingPage from "./Component /RoomShiftingPage";
 
 // Admin Pages
 import Dashboard from "./Pages/Dashboard";
@@ -119,6 +120,7 @@ export default function App() {
         <Route path="/order-confirmation" element={<OrderConfirmation />} />
         <Route path="/my-order" element={<MyOrdersPage />} />
         <Route path="/services" element={ <ServicesSection/>} />
+        <Route path="/roomshifting" element={RoomShiftingPage/>
         <Route path="/packages" element={<PackageList />} />
 
         {/* ----------------- Admin Routes ----------------- */}
