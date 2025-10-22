@@ -329,22 +329,6 @@ export default function Navbar() {
           </Box>
         </Toolbar>
       </AppBar>
-
-      {/* Cleaning Services Header */}
-      <Box
-        sx={{
-          backgroundColor: "#fbbf24",
-          color: "#1e293b",
-          py: 3,
-          textAlign: "center",
-          fontWeight: "bold",
-          fontSize: { xs: "1.2rem", sm: "1.5rem", md: "1.8rem" },
-          letterSpacing: 1,
-        }}
-      >
-        Cleaning Services
-      </Box>
-
       {/* Drawer */}
       <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
         <Box sx={{ width: 280 }}>
