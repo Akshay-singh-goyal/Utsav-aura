@@ -120,7 +120,7 @@ export default function App() {
         <Route path="/order-confirmation" element={<OrderConfirmation />} />
         <Route path="/my-order" element={<MyOrdersPage />} />
         <Route path="/services" element={ <ServicesSection/>} />
-        <Route path="/roomshifting" element={<RoomShiftingPage/>}/>
+       <Route path="/roomshifting" element={<RoomShiftingPage />} />
         <Route path="/packages" element={<PackageList />} />
 
         {/* ----------------- Admin Routes ----------------- */}
