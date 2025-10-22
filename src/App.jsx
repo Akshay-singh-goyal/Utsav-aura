@@ -16,6 +16,7 @@ import Login from "./Pages/Login";
 import ForgotPassword from "./Pages/ForgotPassword";
 import ResetPassword from "./Pages/ResetPassword";
 import ContactUs from "./Pages/ContactUs";
+import RoomShiftingPage from "./Pages/RoomShiftingPage";
 
 // User Pages
 import Cart from "./Pages/CartPage";
@@ -29,7 +30,6 @@ import DecorationGallery from "./Component/DecorationGallery";
 import DecorationDetail from "./Pages/DecorationDetail";
 import UserChat from "./Component/UserChat";
 import ServicesSection from "./Component/ServicesSection";
-import RoomShiftingPage from "./Component/RoomShiftingPage";
 
 // Admin Pages
 import Dashboard from "./Pages/Dashboard";
