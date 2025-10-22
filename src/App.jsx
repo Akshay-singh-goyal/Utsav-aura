@@ -28,7 +28,7 @@ import ProductDetails from "./Component/ProductDetails";
 import DecorationGallery from "./Component/DecorationGallery";
 import DecorationDetail from "./Pages/DecorationDetail";
 import UserChat from "./Component/UserChat";
-import Sevices from "./Component/ServicesSection";
+import ServicesSection from "./Component/ServicesSection";
 
 // Admin Pages
 import Dashboard from "./Pages/Dashboard";
