@@ -177,7 +177,7 @@ export default function Home() {
           <Button variant="contained" color="secondary" size="large">
             Book Now
           </Button>
-          <Button variant="outlined" color="inherit" size="large">
+          <Button variant="outlined" color="#000000" size="large">
             Explore
           </Button>
         </Stack>
