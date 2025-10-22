@@ -135,7 +135,7 @@ export default function Navbar() {
 
   const profileLinks = [
     { name: "View Profile", path: "/view-profile" },
-    { name : "Services", path: "/services"},
+    { name : " Our Services", path: "/services"},
   ];
 
   const otherLinks = [
