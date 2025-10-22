@@ -34,6 +34,7 @@ import LiveHistory from "./LiveHistory";
 import UserPackageViewPage from "../Component/UserPackageViewPage";
 import ProductGallery from "../Component/ProductGallery";
 import DecorationGallery from "../Component/DecorationGallery";
+import Slider from "../Component/Slider";
 import { getLoggedInUser } from "../utils/auth";
 
 // Local images
@@ -138,45 +139,7 @@ export default function Home() {
     >
       <audio ref={audioRef} src="/diwali-bgm.mp3" loop autoPlay />
 
-      {/* 🖼️ SLIDER SECTION ABOVE HERO */}
-      <Box
-        sx={{
-          width: "100%",
-          overflow: "hidden",
-          position: "relative",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            width: "300%",
-            animation: "slide 15s infinite",
-            "@keyframes slide": {
-              "0%": { transform: "translateX(0)" },
-              "33%": { transform: "translateX(-100%)" },
-              "66%": { transform: "translateX(-200%)" },
-              "100%": { transform: "translateX(0)" },
-            },
-          }}
-        >
-          {["/images/slide1.jpg", "/images/slide2.jpg", "/images/slide3.jpg"].map(
-            (img, i) => (
-              <Box key={i} sx={{ width: "100%", height: "50vh" }}>
-                <img
-                  src={img}
-                  alt={`Slide ${i}`}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                  }}
-                />
-              </Box>
-            )
-          )}
-        </Box>
-      </Box>
-
+    <Slider/>
       {/* 🌟 HERO SECTION */}
       <Box
         sx={{
