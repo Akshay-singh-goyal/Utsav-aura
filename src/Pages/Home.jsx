@@ -25,7 +25,6 @@ import { FaTruckMoving, FaBroom, FaCheckCircle, FaCalendarAlt, FaHeadset } from 
 import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
 import Loader from "../Component/Loader";
-import MainSlider from "../Component/Slider";
 import LiveDarshan from "../Component/Livedareshan";
 import LiveHistory from "./LiveHistory";
 import UserPackageViewPage from "../Component/UserPackageViewPage";
@@ -41,14 +40,6 @@ import event from "../Component/Images/event.jpg";
 
 // Slide transition for Dialog
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
-
-// Sample Data
-const services = [
-  { title: "Room Shifting", desc: "Local & Intercity moving with care.", img: "/images/room-shifting.jpg" },
-  { title: "House Cleaning", desc: "Regular, deep or move-in cleaning services.", img: "/images/house-cleaning.jpg" },
-  { title: "Packing & Unpacking", desc: "Professional packing & unpacking services.", img: "/images/packing.jpg" },
-  { title: "Furniture Assembly", desc: "Expert furniture installation & assembly.", img: "/images/furniture.jpg" },
-];
 
 const reviews = [
   { name: "Ramesh Kumar", comment: "Excellent service! My house is sparkling clean.", photo: "/images/user1.jpg" },
@@ -112,7 +103,7 @@ export default function Home() {
         <Toolbar sx={{ justifyContent: "space-between" }}>
           <Box component="img" src="/images/logo.png" alt="Logo" height={50} />
           <Stack direction="row" spacing={2} sx={{ display: { xs: "none", md: "flex" } }}>
-            {["Home", "Services", "Pricing", "About Us", "Blog", "Contact"].map((link) => (
+            {["Home", "Pricing", "About Us", "Blog", "Contact"].map((link) => (
               <Button key={link} color="inherit">{link}</Button>
             ))}
             <Button variant="contained" color="secondary">Book Now</Button>
@@ -123,7 +114,7 @@ export default function Home() {
       {/* Hero Section */}
       <Box
         sx={{
-          minHeight: "80vh",
+          minHeight: "75vh",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -137,39 +128,29 @@ export default function Home() {
       >
         <Box>
           <Typography variant={isMobile ? "h4" : "h2"} fontWeight="bold" mb={2}>
-            Stress-Free Moving & Sparkling Clean Homes
+            Celebrate Your Moments with Utsav Aura
           </Typography>
           <Typography variant={isMobile ? "body1" : "h5"} mb={4}>
-            Reliable, affordable, and safe services for your home or office.
+            From divine decor to live darshans — experience devotion and festivity together.
           </Typography>
           <Stack direction="row" spacing={2} justifyContent="center">
             <Button variant="contained" color="secondary" size="large">Book Now</Button>
-            <Button variant="outlined" color="inherit" size="large">Get Free Estimate</Button>
+            <Button variant="outlined" color="inherit" size="large">Explore</Button>
           </Stack>
         </Box>
       </Box>
 
-      {/* Special Offer */}
-      <Container sx={{ py: 4, textAlign: "center" }}>
-        <Paper sx={{ p: 3, bgcolor: "#FFEBCC", borderRadius: 3 }}>
-          <Typography variant="h6" fontWeight="bold">
-            🎉 Special Offer: Get 20% Off on Your First Booking!
-          </Typography>
-        </Paper>
-      </Container>
-
-      {/* Search Bar */}
+      {/* 🔍 Search Bar (Now SECOND SECTION) */}
       <Box
         sx={{
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          py: isMobile ? 2 : 3,
+          py: 3,
           px: 2,
           bgcolor: "#fff3e0",
           borderBottom: "2px solid #f59e0b",
-          position: "sticky",
-          top: 0,
+          position: "relative",
           zIndex: 10,
           borderRadius: 2,
           boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
@@ -231,63 +212,46 @@ export default function Home() {
         </Container>
       )}
 
-      {/* Main Slider */}
-      <MainSlider />
-
-      {/* Services */}
-      <Container sx={{ py: 6 }}>
-        <Typography variant="h4" fontWeight="bold" mb={4} textAlign="center">
-          Our Services
-        </Typography>
-        <Grid container spacing={3}>
-          {services.map((service) => (
-            <Grid item xs={12} sm={6} md={3} key={service.title}>
-              <Paper
-                sx={{
-                  p: 2,
-                  borderRadius: 3,
-                  textAlign: "center",
-                  '&:hover': { transform: 'scale(1.05)', boxShadow: 6 },
-                }}
-              >
-                <img
-                  src={service.img}
-                  alt={service.title}
-                  style={{ width: "100%", borderRadius: 12, height: 180, objectFit: "cover" }}
-                />
-                <Typography variant="h6" mt={2}>{service.title}</Typography>
-                <Typography variant="body2">{service.desc}</Typography>
-                <Button variant="contained" color="primary" sx={{ mt: 2 }}>Book Now</Button>
-              </Paper>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
-
-      {/* Categories */}
+      {/* 🛍 Shop by Category (Round Shape Cards) */}
       <Container maxWidth="xl" sx={{ mt: 6 }}>
-        <Typography variant="h4" fontWeight="bold" mb={3} sx={{ color: "#f59e0b", textAlign: "center", letterSpacing: 1 }}>
+        <Typography variant="h4" fontWeight="bold" mb={3} sx={{ color: "#f59e0b", textAlign: "center" }}>
           Shop by Category
         </Typography>
-        <Grid container spacing={3} justifyContent="center">
-          {[{ title: "Murti & Idols", img: murtiidol },
-            { title: "Decorations", img: decoration },
-            { title: "Event Booking", img: event },
-            { title: "Garba Dresses", img: garbadress }].map((cat) => (
+        <Grid container spacing={4} justifyContent="center">
+          {[{ title: "Murti & Idols", img: murtiidol, path: "/murtis" },
+            { title: "Decorations", img: decoration, path: "/decorations" },
+            { title: "Event Booking", img: event, path: "/events" },
+            { title: "Garba Dresses", img: garbadress, path: "/dresses" }].map((cat) => (
             <Grid item xs={6} sm={3} key={cat.title}>
               <Paper
                 elevation={6}
                 sx={{
                   p: 2,
                   textAlign: "center",
-                  borderRadius: 3,
+                  borderRadius: "50%",
+                  width: 180,
+                  height: 180,
+                  mx: "auto",
                   background: "linear-gradient(145deg, #fff3e0, #ffe0b2)",
                   transition: "0.3s",
                   "&:hover": { transform: "scale(1.07)", boxShadow: "0 8px 20px rgba(0,0,0,0.3)" },
+                  cursor: "pointer",
                 }}
+                onClick={() => navigate(cat.path)}
               >
-                <img src={cat.img} alt={cat.title} style={{ width: "100%", borderRadius: 12, height: 140, objectFit: "cover" }} />
-                <Typography variant="subtitle1" fontWeight="bold" mt={2} sx={{ color: "#b45309" }}>{cat.title}</Typography>
+                <img
+                  src={cat.img}
+                  alt={cat.title}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                  }}
+                />
+                <Typography variant="subtitle1" fontWeight="bold" mt={1} sx={{ color: "#b45309" }}>
+                  {cat.title}
+                </Typography>
               </Paper>
             </Grid>
           ))}
