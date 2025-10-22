@@ -29,7 +29,7 @@ import MainSlider from "../Component/Slider";
 import LiveDarshan from "../Component/Livedareshan";
 import LiveHistory from "./LiveHistory";
 import UserPackageViewPage from "../Component/UserPackageViewPage";
-Import ProductGallery from "../Component/ProductGallery";
+import ProductGallery from "../Component/ProductGallery";
 import DecorationGallery from "../Component/DecorationGallery";
 import { getLoggedInUser } from "../utils/auth";
 
