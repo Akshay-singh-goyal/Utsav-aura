@@ -28,6 +28,7 @@ import ProductDetails from "./Component/ProductDetails";
 import DecorationGallery from "./Component/DecorationGallery";
 import DecorationDetail from "./Pages/DecorationDetail";
 import UserChat from "./Component/UserChat";
+import Sevices from "./Component/ServicesSection";
 
 // Admin Pages
 import Dashboard from "./Pages/Dashboard";
@@ -117,6 +118,7 @@ export default function App() {
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/order-confirmation" element={<OrderConfirmation />} />
         <Route path="/my-order" element={<MyOrdersPage />} />
+        <Route path="/services" element={ <ServicesSection/>} />
         <Route path="/packages" element={<PackageList />} />
 
         {/* ----------------- Admin Routes ----------------- */}
