@@ -112,21 +112,7 @@ export default function Home() {
           px: 2,
         }}
       >
-        <Box>
-          <Typography variant={isMobile ? "h4" : "h2"} fontWeight="bold" mb={2}>
-            Celebrate Your Moments with Utsav Aura
-          </Typography>
-          <Typography variant={isMobile ? "body1" : "h5"} mb={4}>
-            From divine decor to live darshans — experience devotion and festivity together.
-          </Typography>
-          <Stack direction="row" spacing={2} justifyContent="center">
-            <Button variant="contained" color="secondary" size="large">Book Now</Button>
-            <Button variant="outlined" color="inherit" size="large">Explore</Button>
-          </Stack>
-        </Box>
-      </Box>
-
-      {/* 🔍 Search Bar (Now SECOND SECTION) */}
+         {/* 🔍 Search Bar (Now SECOND SECTION) */}
       <Box
         sx={{
           display: "flex",
@@ -197,7 +183,19 @@ export default function Home() {
           </Grid>
         </Container>
       )}
-
+        <Box>
+          <Typography variant={isMobile ? "h4" : "h2"} fontWeight="bold" mb={2}>
+            Celebrate Your Moments with Utsav Aura
+          </Typography>
+          <Typography variant={isMobile ? "body1" : "h5"} mb={4}>
+            From divine decor to live darshans — experience devotion and festivity together.
+          </Typography>
+          <Stack direction="row" spacing={2} justifyContent="center">
+            <Button variant="contained" color="secondary" size="large">Book Now</Button>
+            <Button variant="outlined" color="inherit" size="large">Explore</Button>
+          </Stack>
+        </Box>
+      </Box>
       {/* 🛍 Shop by Category (Round Shape Cards) */}
       <Container maxWidth="x" sx={{ mt: 3 }}>
         <Typography variant="h3" fontWeight="bold" mb={1} sx={{ color: "#f59e0b", textAlign: "center" }}>
