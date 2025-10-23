@@ -17,6 +17,7 @@ import ForgotPassword from "./Pages/ForgotPassword";
 import ResetPassword from "./Pages/ResetPassword";
 import ContactUs from "./Pages/ContactUs";
 import RoomShiftingPage from "./Pages/RoomShiftingPage";
+import HomeDecorationPage from "./Pages/HomeDecorationPage";
 
 // User Pages
 import Cart from "./Pages/CartPage";
@@ -120,7 +121,8 @@ export default function App() {
         <Route path="/order-confirmation" element={<OrderConfirmation />} />
         <Route path="/my-order" element={<MyOrdersPage />} />
         <Route path="/services" element={ <ServicesSection/>} />
-       <Route path="/roomshifting" element={<RoomShiftingPage />} />
+        <Route path="/roomshifting" element={<RoomShiftingPage />} />
+         <Route path="/home-decoration" element={<HomeDecorationPage />} />
         <Route path="/packages" element={<PackageList />} />
 
         {/* ----------------- Admin Routes ----------------- */}
